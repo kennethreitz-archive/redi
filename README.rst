@@ -19,7 +19,7 @@ Example usage ::
     students = RList('dashboard:students')
 
     students.append(dict(blah='blah'))
-    students.appdend(someobject)
+    students.append(someobject)
 
-    for i, student in enumerate(students):
+    for (i, student) in enumerate(students):
         students[i] = srcub(student)
