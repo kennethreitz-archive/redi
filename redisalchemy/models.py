@@ -19,11 +19,17 @@ def SubDict(object):
         pass
 
 
+def SubValue(object):
+    """Redis Values"""
+    pass
+
+
 
 def RList(object):
     """Redis list of awesomeness."""
 
     def __init__(self, key):
+        self.list = []
         pass
 
     def append(value):
@@ -49,3 +55,8 @@ def RSet(object):
 
     def __init__(self, key):
         pass
+
+
+def RSomething(object):
+    """Transforms into whatever it needs to be."""
+    pass
