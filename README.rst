@@ -12,7 +12,8 @@ Ideas
 Everything should be serialized to JSON by default.
 
 
-::
+Example usage ::
+
     from redisalchemy import RList, RSet, RList, search, find
 
     students = RList('dashboard:students')
