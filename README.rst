@@ -9,12 +9,18 @@ I'm certianly not an efficiency expert. I just want to be able to do things easi
 Ideas
 -----
 
-Everything should be serialized to JSON by default.
+- Offer limited type-specific search.
+- Treat objects as dicts.
+- Offer fileobject-like interface to values
+    + useful for iterating
+
+
+Everything should be serialized to JSON by default. Configurable.
 
 
 Example usage ::
 
-    from redisalchemy import RList, RSet, RList, search, find
+    from redisalchemy import RList, RSet, RString, search, find
 
     students = RList('dashboard:students')
 
@@ -23,3 +29,5 @@ Example usage ::
 
     for (i, student) in enumerate(students):
         students[i] = srcub(student)
+
+
