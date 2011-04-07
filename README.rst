@@ -27,6 +27,18 @@ Example usage ::
     students.append(dict(blah='blah'))
     students.append(someobject)
 
+    students.contain('value')
+    #
+
+
+    students.any_contain('value')
+    #
+
+    students.any_contain_any('value')
+    # list of lists
+    # list of dicts (keys)
+
+
     for (i, student) in enumerate(students):
         students[i] = srcub(student)
 
