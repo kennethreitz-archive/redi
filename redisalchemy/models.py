@@ -4,6 +4,22 @@
 __all__ = ('RList', 'RString', 'RSet')
 
 
+def SubList(object):
+    """Lists within Redis values."""
+
+    def __init__(self):
+        pass
+
+
+
+def SubDict(object):
+    """Dicts within Redis values."""
+
+    def __init__(self):
+        pass
+
+
+
 def RList(object):
     """Redis list of awesomeness."""
 
@@ -13,6 +29,11 @@ def RList(object):
     def append(value):
         pass
 
+    def _to_python(self):
+        pass
+
+    def _to_redis(self):
+        pass
 
 
 def RString(object):
