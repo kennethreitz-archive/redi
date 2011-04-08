@@ -4,14 +4,9 @@ import redisalchemy as ra
 
 
 student = ra.Rvalue('dashboard:student')
-# print student.value
 
 student.value = {'hi': 'bye'}
-
-
+raw_input()
 student.value['face'] = 'book'
-# student.value.append('hi')
-
-
 
 print student.value

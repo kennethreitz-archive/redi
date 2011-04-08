@@ -133,8 +133,7 @@ class Rvalue(BaseRedis):
 
     def save(self, value):
         v = self.to_redis(value)
-        self.redis.set(self.key, v)
-        return True
+        return self.redis.set(self.key, v)
 
     @property
     def value(self):
@@ -150,19 +149,4 @@ class Rvalue(BaseRedis):
     def type(self):
         v = self.redis.get(self.key)
         return type(self.value)
-
-
-class Rset(BaseRedis):
-    """Redis string of awesomeness."""
-
-    def __init__(self, key):
-        super(Rset, self).__init__()
-        pass
-
-
-class Rsomething(object):
-    """Transforms into whatever it needs to be."""
-    pass
-
-
 
