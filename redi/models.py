@@ -23,12 +23,10 @@ from .utils import ListMixin
 class BaseRedis(object):
     """Base Redis object. """
 
-    redis = config.redis
-
+    redis = redis
 
     def __init__(self):
         super(BaseRedis, self).__init__()
-        self._po = None
 
 
     @staticmethod
@@ -54,11 +52,31 @@ class BaseRedis(object):
 
 
 
-class SubList(list):
+class SubList(ListMixin):
     """Lists within Redis values."""
 
-    def __init__(self, l):
+    def __init__(self, l, writer):
         self.data = l
+        self.writer = writer
+
+
+    def write(self):
+        self.writer(self.data)
+
+
+    def _get_element(self, i):
+        return self.data[i]
+
+
+    def _set_element(self, i, value):
+        self.data[i] = value
+        self.write()
+
+
+
+    # _get_element(i), _set_element(i, value),
+  # __len__(), _resize_region(start, end, new_size) and
+  # _constructor(iterable).  Define __iter__() for extra speed.
 
 
 class SubDict(DictMixin):
@@ -69,12 +87,19 @@ class SubDict(DictMixin):
         self.writer = writer
         # self.__dict__.update(d)
 
+
+    def write(self):
+        self.writer(self.data)
+
+
     def __getitem__(self, item):
         return self.data.get(item)
 
+
     def __setitem__(self, k, v):
         self.data[k] = v
-        self.writer(self.data)
+        self.write()
+
 
     def __repr__(self):
         return repr(self.data)

@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-import redisalchemy as ra
+import redi
 
+student = redi.Rvalue('dashboard:student')
 
-student = ra.Rvalue('dashboard:student')
+print student.value
 
 student.value = {'hi': 'bye'}
-raw_input()
 student.value['face'] = 'book'
 
 print student.value
