@@ -2,10 +2,16 @@
 
 import redisalchemy as ra
 
-ra.config()
 
 student = ra.Rvalue('dashboard:student')
-print student.value
+# print student.value
 
-student.value = [1,2,3,4, '5']
-print student.type
+student.value = {'hi': 'bye'}
+
+
+student.value['face'] = 'book'
+# student.value.append('hi')
+
+
+
+print student.value

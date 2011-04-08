@@ -3,12 +3,11 @@
 
 
 import config
-
+from clint.textui import colored, puts
 import jsonpickle
 
 
-
-
+from UserDict import DictMixin
 
 
 
@@ -31,28 +30,45 @@ class BaseRedis(object):
             return o
 
 
-    @staticmethod
-    def to_python(o):
+    def to_python(self, o):
         try:
-            return jsonpickle.decode(o)
+            v = jsonpickle.decode(o)
+
+            if isinstance(v, list):
+                return SubList(v)
+            elif isinstance(v, dict):
+                return SubDict(v, self.save)
+
         except ValueError:
             return o
 
 
 
 
-class SubList(object):
+class SubList(list):
     """Lists within Redis values."""
 
-    def __init__(self):
-        pass
+    def __init__(self, l):
+        self.data = l
 
 
-class SubDict(object):
+class SubDict(DictMixin):
     """Dicts within Redis values."""
 
-    def __init__(self):
-        pass
+    def __init__(self, d, writer):
+        self.data = d
+        self.writer = writer
+        # self.__dict__.update(d)
+
+    def __getitem__(self, item):
+        return self.data.get(item)
+
+    def __setitem__(self, k, v):
+        self.data[k] = v
+        self.writer(self.data)
+
+    def __repr__(self):
+        return repr(self.data)
 
 
 class SubValue(object):
@@ -112,6 +128,14 @@ class Rvalue(BaseRedis):
         super(Rvalue, self).__init__()
         self.key = key
 
+    def __repr__(self):
+        return '<redis-value {0}>'.format(self.key)
+
+    def save(self, value):
+        v = self.to_redis(value)
+        self.redis.set(self.key, v)
+        return True
+
     @property
     def value(self):
         v = self.redis.get(self.key)
@@ -120,10 +144,7 @@ class Rvalue(BaseRedis):
 
     @value.setter
     def value(self, value):
-        v = self.to_redis(value)
-        self.redis.set(self.key, v)
-
-        return v
+        self.save(value)
 
     @property
     def type(self):
