@@ -1,13 +1,22 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+"""
+redisalchemy.models
+~~~~~~~~~~~~~~~~~~~
 
-import config
-from clint.textui import colored, puts
-import jsonpickle
+This module contains most of the functionality of redis.
+
+"""
+
 
 
 from UserDict import DictMixin
+
+import jsonpickle
+
+from .config import redis
+from .utils import ListMixin
 
 
 
