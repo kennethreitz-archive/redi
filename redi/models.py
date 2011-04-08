@@ -15,11 +15,9 @@ from UserDict import DictMixin
 
 import jsonpickle
 
-from .config import redis
+from .config import redis, encoding
 from .utils import ListMixin, is_collection
 
-
-ENCODING = 'utf8'
 
 
 class BaseRedis(object):
@@ -54,7 +52,7 @@ class BaseRedis(object):
 
         except (ValueError, TypeError):
             try:
-                return unicode(o, ENCODING)
+                return unicode(o, encoding)
             except (UnicodeDecodeError, TypeError):
                 return o
 
