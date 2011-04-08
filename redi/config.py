@@ -1,16 +1,19 @@
 # -*- coding: utf-8 -*-
 
 """
-redi.models
+redi.config
 ~~~~~~~~~~~
 
-This module contains the configuration of redi.
+This module contains the redi configuration.
 
 """
 
+
 from redis import Redis
 
+
 ENCODING = 'utf8'
+
 
 
 def init(host='localhost', port=6379, db=0):
