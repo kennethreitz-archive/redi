@@ -13,9 +13,8 @@ This module contains most of the functionality of redi.
 
 from UserDict import DictMixin
 
-import jsonpickle
 
-from .config import redis, ENCODING
+from .config import redis, ENCODER, DECODER, STR_ENCODING
 from .utils import ListMixin, is_collection
 
 
@@ -28,18 +27,17 @@ class BaseRedis(object):
         self.redis = redis
 
 
-
     @staticmethod
     def to_redis(o):
         if is_collection(o):
-            return jsonpickle.encode(o)
+            return ENCODER(o)
         else:
             return o
 
 
     def to_python(self, o):
         try:
-            v = jsonpickle.decode(o)
+            v = DECODER(o)
 
             if isinstance(v, dict):
                 return SubDict(v, self.save)
@@ -52,7 +50,7 @@ class BaseRedis(object):
 
         except (ValueError, TypeError):
             try:
-                return unicode(o, ENCODING)
+                return unicode(o, STR_ENCODING)
             except (UnicodeDecodeError, TypeError):
                 return o
 

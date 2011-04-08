@@ -11,8 +11,13 @@ This module contains the redi configuration.
 
 from redis import Redis
 
+import jsonpickle
 
-ENCODING = 'utf8'
+
+ENCODER =  jsonpickle.encode
+DECODER = jsonpickle.decode
+
+STR_ENCODING = 'utf8'
 
 
 
