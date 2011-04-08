@@ -20,7 +20,8 @@ from .utils import ListMixin, is_collection
 
 
 class BaseRedis(object):
-    """Base Redis object. """
+    """Base Redis interface object. Provides Redis instance and
+    datatype mapping."""
 
     def __init__(self, redis=redis):
         super(BaseRedis, self).__init__()
@@ -29,6 +30,7 @@ class BaseRedis(object):
 
     @staticmethod
     def to_redis(o):
+        """Converts Python datatypes to Redis values."""
         if is_collection(o):
             return ENCODER(o)
         else:
@@ -36,6 +38,7 @@ class BaseRedis(object):
 
 
     def to_python(self, o):
+        """Converts Redis values to Python datatypes."""
         try:
             v = DECODER(o)
 
@@ -66,8 +69,8 @@ class SubList(ListMixin):
 
 
     def write(self):
+        """Writes List to Redis."""
         self.writer(self.data)
-
 
     def _get_element(self, i):
         return self.data[i]
@@ -93,6 +96,7 @@ class SubList(ListMixin):
             yield item
 
 
+
 class SubDict(DictMixin):
     """Dicts within Redis values."""
 
@@ -103,6 +107,7 @@ class SubDict(DictMixin):
 
 
     def write(self):
+        """Writes Dict to Redis."""
         self.writer(self.data)
 
 
@@ -119,11 +124,12 @@ class SubDict(DictMixin):
         return repr(self.data)
 
 
-class Rlist(BaseRedis):
+
+class RedisList(BaseRedis):
     """Redis list of awesomeness."""
 
     def __init__(self, key):
-        super(Rlist, self).__init__()
+        super(RedisList, self).__init__()
         self.key = key
         self.sync()
 
@@ -162,11 +168,11 @@ class Rlist(BaseRedis):
         self.sync()
 
 
-class Rvalue(BaseRedis):
-    """Redis string of awesomeness."""
+class RedisValue(BaseRedis):
+    """Redis value of awesomeness."""
 
     def __init__(self, key, r=redis):
-        super(Rvalue, self).__init__(redis=r)
+        super(RedisValue, self).__init__(redis=r)
         self.key = key
 
     def __repr__(self):
