@@ -80,12 +80,6 @@ class SubDict(DictMixin):
         return repr(self.data)
 
 
-class SubValue(object):
-    """Redis Values"""
-    pass
-
-
-
 class Rlist(BaseRedis):
     """Redis list of awesomeness."""
 
