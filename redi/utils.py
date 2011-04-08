@@ -2,6 +2,19 @@
 import copy
 import sys
 
+
+
+
+def is_collection(obj):
+    """Tests if an object is a collection. Strings don't count."""
+
+    if isinstance(obj, basestring):
+        return False
+
+    return hasattr(obj, '__getitem__')
+
+
+
 # Public domain
 class ListMixin(object):
     """

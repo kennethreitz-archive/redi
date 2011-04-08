@@ -16,7 +16,7 @@ from UserDict import DictMixin
 import jsonpickle
 
 from .config import redis
-from .utils import ListMixin
+from .utils import ListMixin, is_collection
 
 
 
@@ -41,12 +41,16 @@ class BaseRedis(object):
         try:
             v = jsonpickle.decode(o)
 
-            if isinstance(v, list):
-                return SubList(v, self.save)
-            elif isinstance(v, dict):
+            if isinstance(v, dict):
                 return SubDict(v, self.save)
 
-        except ValueError:
+            elif is_collection(v):
+                return SubList(v, self.save)
+
+            else:
+                return o
+
+        except (ValueError, TypeError):
             return o
 
 
@@ -78,7 +82,6 @@ class SubList(ListMixin):
     def _resize_region(self, start, end, new_size):
 
         self.data[start:end] = [None] * new_size
-
         self.write()
 
     def _constructor(self, iter):
@@ -87,6 +90,25 @@ class SubList(ListMixin):
     def __iter__(self):
         for item in self.data:
             yield item
+
+
+class SubBytes(object):
+
+    def __init__(self, bytes, writer):
+        self.data = bytes
+        self.writer = writer
+
+    def write(self):
+        self.writer(self.data)
+
+class SubString(object):
+
+    def __init__(self, unicodes, writer):
+        self.data = unicodes
+        self.writer = writer
+
+    def write(self):
+        self.writer(self.data)
 
 
 
@@ -122,7 +144,6 @@ class Rlist(BaseRedis):
     def __init__(self, key):
         super(Rlist, self).__init__()
         self.key = key
-        self._po = []
         self.sync()
 
     def __repr__(self):
