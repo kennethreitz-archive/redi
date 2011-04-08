@@ -8,34 +8,34 @@ import jsonpickle
 
 
 
-def to_redis(o):
-    if hasattr(o, '__getitem__'):
-        return jsonpickle.encode(o)
-    else:
-        return o
 
 
-def to_python(o):
-    try:
-        return jsonpickle.decode(o)
-    except ValueError:
-        return o
-
-
-
-# __all__ = ('Rlist', 'Rvalue', 'Rset')
 
 
 class BaseRedis(object):
 
     redis = config.redis
 
+
     def __init__(self):
         super(BaseRedis, self).__init__()
         self._po = None
 
-    def __to_redis(self):
-        pass
+
+    @staticmethod
+    def to_redis(o):
+        if hasattr(o, '__getitem__'):
+            return jsonpickle.encode(o)
+        else:
+            return o
+
+
+    @staticmethod
+    def to_python(o):
+        try:
+            return jsonpickle.decode(o)
+        except ValueError:
+            return o
 
 
 
@@ -116,14 +116,18 @@ class Rvalue(BaseRedis):
     @property
     def value(self):
         v = self.redis.get(self.key)
-        return to_python(v)
+        return self.to_python(v)
 
     @value.setter
     def value(self, value):
-        v = to_redis(value)
+        v = self.to_redis(value)
         self.redis.set(self.key, v)
 
         return v
+
+    def type(self):
+        v = self.redis.get(self.key)
+        v = self.to_python(v)
 
 
 class Rset(BaseRedis):
