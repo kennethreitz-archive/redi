@@ -197,3 +197,7 @@ class RedisValue(BaseRedis):
         v = self.redis.get(self.key)
         return type(self.value)
 
+    def delete(self):
+        """Removes this key from Redis."""
+        return self.redis.delete(self.key)
+
