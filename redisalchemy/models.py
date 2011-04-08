@@ -105,8 +105,6 @@ class Rlist(BaseRedis):
         self.sync()
 
 
-
-
 class Rvalue(BaseRedis):
     """Redis string of awesomeness."""
 
@@ -119,6 +117,7 @@ class Rvalue(BaseRedis):
         v = self.redis.get(self.key)
         return self.to_python(v)
 
+
     @value.setter
     def value(self, value):
         v = self.to_redis(value)
@@ -126,9 +125,10 @@ class Rvalue(BaseRedis):
 
         return v
 
+    @property
     def type(self):
         v = self.redis.get(self.key)
-        v = self.to_python(v)
+        return type(self.value)
 
 
 class Rset(BaseRedis):
