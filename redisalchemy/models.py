@@ -4,20 +4,20 @@
 
 import config
 
-import json
+import jsonpickle
 
 
 
 def to_redis(o):
     if hasattr(o, '__getitem__'):
-        return json.dumps(o)
+        return jsonpickle.encode(o)
     else:
         return o
 
 
 def to_python(o):
     try:
-        return json.loads(o)
+        return jsonpickle.decode(o)
     except ValueError:
         return o
 
