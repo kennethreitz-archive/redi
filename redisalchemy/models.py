@@ -1,6 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+
+import config
+
+
 __all__ = ('RList', 'RString', 'RSet')
 
 
@@ -9,7 +13,6 @@ class SubList(object):
 
     def __init__(self):
         pass
-
 
 
 class SubDict(object):
@@ -30,7 +33,13 @@ class RList(BaseRedis):
 
     def __init__(self, key):
         super(RList, self).__init__()
-        self.list = []
+        self.key = key
+        self._po = []
+
+    def __repr__(self):
+        return '<redis-list {0}>'.format(self.key)
+
+    def __getitem__(self, i):
         pass
 
     def append(self, value):
@@ -43,7 +52,14 @@ class RList(BaseRedis):
         return self.pop(right=True)
 
     def pop(self, right=True):
+        # pops redis datasaet, resyncs?
         return None
+
+    def sort(self, direction):
+        pass
+
+    def sync(self):
+        """Syncs dataset."""
 
 
 
@@ -71,6 +87,8 @@ def RSomething(object):
 
 
 def BaseRedis(object):
+
+    redis = config.redis
 
     def __init__(self
         super(BaseRedis, self).__init__()):
