@@ -2,10 +2,17 @@
 
 import redi
 
-student = redi.Rvalue('dashboard:student')
+v = redi.value('png')
 
-print student.value
+# with open('kr.png', 'rb') as f:
+    # v.value = f.read()
+    # f.write(v.value)
+# unicode(v.value)
 
-student.value['face'] = 'book'
+v.value = 'hi'
 
-print student.value
+# print type(v.value)
+print v.value
+
+# print repr(v.value)
+# print unicode(v.value)

@@ -37,15 +37,19 @@ class ListMixin(object):
     new instance of the same class as self, populated with the elements
     of the given iterable.
     """
+
     def __cmp__(self, other):
         return cmp(list(self), list(other))
+
 
     def __hash__(self):
         raise TypeError('list objects are unhashable')
 
+
     def __iter__(self):
         for i in xrange(len(self)):
             yield self._get_element(i)
+
 
     def _tuple_from_slice(self, i):
         """
@@ -61,12 +65,15 @@ class ListMixin(object):
             step = None
         return (start, end, step)
 
+
+
     def _fix_index(self, i):
         if i < 0:
             i += len(self)
         if i < 0 or i >= len(self):
             raise IndexError('list index out of range')
         return i
+
 
     def __getitem__(self, i):
         if isinstance(i, slice):
@@ -78,6 +85,8 @@ class ListMixin(object):
             return self._constructor([self._get_element(i) for i in indices])
         else:
             return self._get_element(self._fix_index(i))
+
+
 
     def __setitem__(self, i, value):
         if isinstance(i, slice):
@@ -101,6 +110,8 @@ class ListMixin(object):
             # Single element
             self._set_element(self._fix_index(i), value)
 
+
+
     def __delitem__(self, i):
         if isinstance(i, slice):
             (start, end, step) = self._tuple_from_slice(i)
@@ -120,6 +131,7 @@ class ListMixin(object):
             i = self._fix_index(i)
             self._resize_region(i, i + 1, 0)
 
+
     def __add__(self, other):
         if isinstance(other, self.__class__):
             ans = self._constructor(self)
@@ -127,10 +139,12 @@ class ListMixin(object):
             return ans
         return list(self) + other
 
+
     def __mul__(self, other):
         ans = self._constructor(self)
         ans *= other
         return ans
+
 
     def __radd__(self, other):
         if isinstance(other, self.__class__):
@@ -139,12 +153,15 @@ class ListMixin(object):
             return ans
         return other + list(self)
 
+
     def __rmul__(self, other):
         return self * other
+
 
     def __iadd__(self, other):
         self[len(self):len(self)] = other
         return self
+
 
     def __imul__(self, other):
         if other <= 0:
@@ -155,11 +172,14 @@ class ListMixin(object):
                 self.extend(aux)
         return self
 
+
     def append(self, other):
         self[len(self):len(self)] = [other]
 
+
     def extend(self, other):
         self[len(self):len(self)] = other
+
 
     def count(self, other):
         ans = 0
@@ -168,10 +188,12 @@ class ListMixin(object):
                 ans += 1
         return ans
 
+
     def reverse(self):
         for i in xrange(len(self)//2):
             j = len(self) - 1 - i
             (self[i], self[j]) = (self[j], self[i])
+
 
     def index(self, x, i=0, j=None):
         if i != 0 or j is not None:
@@ -183,8 +205,10 @@ class ListMixin(object):
                 return k
         raise ValueError('index(x): x not in list')
 
+
     def insert(self, i, x):
         self[i:i] = [x]
+
 
     def pop(self, i=None):
         if i == None:
@@ -193,12 +217,14 @@ class ListMixin(object):
         del self[i]
         return ans
 
+
     def remove(self, x):
         for i in xrange(len(self)):
             if self._get_element(i) == x:
                 del self[i]
                 return
         raise ValueError('remove(x): x not in list')
+
 
     # Define sort() as appropriate for the Python version.
     if sys.version_info[:3] < (2, 4, 0):
@@ -217,8 +243,10 @@ class ListMixin(object):
                 ans.sort(cmpfunc)
             self[:] = ans
 
+
     def __copy__(self):
         return self._constructor(self)
+
 
     def __deepcopy__(self, memo={}):
         ans = self._constructor([])

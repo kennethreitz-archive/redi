@@ -19,6 +19,8 @@ from .config import redis
 from .utils import ListMixin, is_collection
 
 
+ENCODING = 'utf8'
+
 
 class BaseRedis(object):
     """Base Redis object. """
@@ -31,7 +33,7 @@ class BaseRedis(object):
 
     @staticmethod
     def to_redis(o):
-        if hasattr(o, '__getitem__'):
+        if is_collection(o):
             return jsonpickle.encode(o)
         else:
             return o
@@ -51,7 +53,10 @@ class BaseRedis(object):
                 return o
 
         except (ValueError, TypeError):
-            return o
+            try:
+                return unicode(o, ENCODING)
+            except UnicodeDecodeError:
+                return o
 
 
 
@@ -90,26 +95,6 @@ class SubList(ListMixin):
     def __iter__(self):
         for item in self.data:
             yield item
-
-
-class SubBytes(object):
-
-    def __init__(self, bytes, writer):
-        self.data = bytes
-        self.writer = writer
-
-    def write(self):
-        self.writer(self.data)
-
-class SubString(object):
-
-    def __init__(self, unicodes, writer):
-        self.data = unicodes
-        self.writer = writer
-
-    def write(self):
-        self.writer(self.data)
-
 
 
 class SubDict(DictMixin):
