@@ -13,6 +13,7 @@ import jsonpickle
 
 
 class BaseRedis(object):
+    """Base Redis object. """
 
     redis = config.redis
 
