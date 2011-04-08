@@ -72,11 +72,20 @@ class SubList(ListMixin):
         self.data[i] = value
         self.write()
 
+    def __len__(self):
+        return len(self.data)
 
+    def _resize_region(self, start, end, new_size):
+        self.data = self.data[start:start+new_size]
+        self.write()
 
-    # _get_element(i), _set_element(i, value),
-  # __len__(), _resize_region(start, end, new_size) and
-  # _constructor(iterable).  Define __iter__() for extra speed.
+    def _constructor(self, iter):
+        return SubList(iter, self.writer)
+
+    def __iter__(self):
+        for item in self.data:
+            yield item
+
 
 
 class SubDict(DictMixin):
