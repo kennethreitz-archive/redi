@@ -42,7 +42,7 @@ class BaseRedis(object):
             v = jsonpickle.decode(o)
 
             if isinstance(v, list):
-                return SubList(v)
+                return SubList(v, self.save)
             elif isinstance(v, dict):
                 return SubDict(v, self.save)
 
@@ -76,7 +76,9 @@ class SubList(ListMixin):
         return len(self.data)
 
     def _resize_region(self, start, end, new_size):
-        self.data = self.data[start:start+new_size]
+
+        self.data[start:end] = [None] * new_size
+
         self.write()
 
     def _constructor(self, iter):
