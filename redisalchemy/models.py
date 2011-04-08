@@ -4,7 +4,7 @@
 __all__ = ('RList', 'RString', 'RSet')
 
 
-def SubList(object):
+class SubList(object):
     """Lists within Redis values."""
 
     def __init__(self):
@@ -12,51 +12,71 @@ def SubList(object):
 
 
 
-def SubDict(object):
+class SubDict(object):
     """Dicts within Redis values."""
 
     def __init__(self):
         pass
 
 
-def SubValue(object):
+class SubValue(object):
     """Redis Values"""
     pass
 
 
 
-def RList(object):
+class RList(BaseRedis):
     """Redis list of awesomeness."""
 
     def __init__(self, key):
+        super(RList, self).__init__()
         self.list = []
         pass
 
-    def append(value):
+    def append(self, value):
         pass
 
-    def _to_python(self):
-        pass
+    def lpop(self):
+        return self.pop(right=False)
 
-    def _to_redis(self):
-        pass
+    def rpop(self):
+        return self.pop(right=True)
+
+    def pop(self, right=True):
+        return None
 
 
-def RString(object):
+
+
+class RString(BaseRedis):
     """Redis string of awesomeness."""
 
     def __init__(self, key):
+        super(RString, self).__init__()
         pass
 
 
-
-def RSet(object):
+class RSet(BaseRedis):
     """Redis string of awesomeness."""
 
     def __init__(self, key):
+        super(RSet, self).__init__()
         pass
 
 
 def RSomething(object):
     """Transforms into whatever it needs to be."""
     pass
+
+
+
+def BaseRedis(object):
+
+    def __init__(self
+        super(BaseRedis, self).__init__()):
+        self._po = None
+
+    def __to_redis(self):
+        pass
+
+    def _
