@@ -1,9 +1,9 @@
-RedisAlchemy: Redis Awesomeness
-===============================
+Redi: Redis Awesomeness
+=======================
 
 **Warning:** this may or may not be a good idea.
 
-I'm certianly not an efficiency expert. I just want to be able to do things easily.
+I'm certainly not an efficiency expert. I just want to be able to do things easily.
 
 
 Ideas
