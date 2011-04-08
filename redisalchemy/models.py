@@ -4,8 +4,40 @@
 
 import config
 
+import json
 
-__all__ = ('RList', 'RString', 'RSet')
+
+
+def to_redis(o):
+    if hasattr(o, '__getitem__'):
+        return json.dumps(o)
+    else:
+        return o
+
+
+def to_python(o):
+    try:
+        return json.loads(o)
+    except ValueError:
+        return o
+
+
+
+# __all__ = ('Rlist', 'Rvalue', 'Rset')
+
+
+class BaseRedis(object):
+
+    redis = config.redis
+
+    def __init__(self):
+        super(BaseRedis, self).__init__()
+        self._po = None
+
+    def __to_redis(self):
+        pass
+
+
 
 
 class SubList(object):
@@ -28,13 +60,14 @@ class SubValue(object):
 
 
 
-class RList(BaseRedis):
+class Rlist(BaseRedis):
     """Redis list of awesomeness."""
 
     def __init__(self, key):
-        super(RList, self).__init__()
+        super(Rlist, self).__init__()
         self.key = key
         self._po = []
+        self.sync()
 
     def __repr__(self):
         return '<redis-list {0}>'.format(self.key)
@@ -42,8 +75,12 @@ class RList(BaseRedis):
     def __getitem__(self, i):
         pass
 
-    def append(self, value):
-        pass
+    def __len__(self):
+        return len(self._po)
+
+    def append(self, *values):
+        for value in value:
+            self._po.append(value)
 
     def lpop(self):
         return self.pop(right=False)
@@ -60,41 +97,46 @@ class RList(BaseRedis):
 
     def sync(self):
         """Syncs dataset."""
+        pass
+
+    def delete(self):
+        redis.delete(key)
+        self.sync()
 
 
 
 
-class RString(BaseRedis):
+class Rvalue(BaseRedis):
     """Redis string of awesomeness."""
 
     def __init__(self, key):
-        super(RString, self).__init__()
-        pass
+        super(Rvalue, self).__init__()
+        self.key = key
+
+    @property
+    def value(self):
+        v = self.redis.get(self.key)
+        return to_python(v)
+
+    @value.setter
+    def value(self, value):
+        v = to_redis(value)
+        self.redis.set(self.key, v)
+
+        return v
 
 
-class RSet(BaseRedis):
+class Rset(BaseRedis):
     """Redis string of awesomeness."""
 
     def __init__(self, key):
-        super(RSet, self).__init__()
+        super(Rset, self).__init__()
         pass
 
 
-def RSomething(object):
+class Rsomething(object):
     """Transforms into whatever it needs to be."""
     pass
 
 
 
-def BaseRedis(object):
-
-    redis = config.redis
-
-    def __init__(self
-        super(BaseRedis, self).__init__()):
-        self._po = None
-
-    def __to_redis(self):
-        pass
-
-    def _
