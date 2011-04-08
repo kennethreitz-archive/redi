@@ -25,10 +25,10 @@ ENCODING = 'utf8'
 class BaseRedis(object):
     """Base Redis object. """
 
-    redis = redis
-
-    def __init__(self):
+    def __init__(self, redis=redis):
         super(BaseRedis, self).__init__()
+        self.redis = redis
+
 
 
     @staticmethod
@@ -55,7 +55,7 @@ class BaseRedis(object):
         except (ValueError, TypeError):
             try:
                 return unicode(o, ENCODING)
-            except UnicodeDecodeError:
+            except (UnicodeDecodeError, TypeError):
                 return o
 
 
@@ -169,8 +169,8 @@ class Rlist(BaseRedis):
 class Rvalue(BaseRedis):
     """Redis string of awesomeness."""
 
-    def __init__(self, key):
-        super(Rvalue, self).__init__()
+    def __init__(self, key, r=redis):
+        super(Rvalue, self).__init__(redis=r)
         self.key = key
 
     def __repr__(self):

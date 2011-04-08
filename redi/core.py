@@ -1,5 +1,5 @@
 from models import *
 
 
-def value(key):
-    return Rvalue(key)
+def value(key, r=redis):
+    return Rvalue(key, r=r)
