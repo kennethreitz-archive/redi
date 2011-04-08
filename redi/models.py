@@ -2,10 +2,10 @@
 # -*- coding: utf-8 -*-
 
 """
-redisalchemy.models
-~~~~~~~~~~~~~~~~~~~
+redi.models
+~~~~~~~~~~~
 
-This module contains most of the functionality of redis.
+This module contains most of the functionality of redi.
 
 """
 
@@ -15,7 +15,7 @@ from UserDict import DictMixin
 
 import jsonpickle
 
-from .config import redis, encoding
+from .config import redis, ENCODING
 from .utils import ListMixin, is_collection
 
 
@@ -52,7 +52,7 @@ class BaseRedis(object):
 
         except (ValueError, TypeError):
             try:
-                return unicode(o, encoding)
+                return unicode(o, ENCODING)
             except (UnicodeDecodeError, TypeError):
                 return o
 

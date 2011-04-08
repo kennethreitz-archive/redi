@@ -1,10 +1,23 @@
+# -*- coding: utf-8 -*-
+
+"""
+redi.models
+~~~~~~~~~~~
+
+This module contains the configuration of redi.
+
+"""
+
 from redis import Redis
 
-redis = Redis(host='localhost', port=6379, db=0)
+ENCODING = 'utf8'
 
 
-encoding = 'utf8'
+def init(host='localhost', port=6379, db=0):
+    """Configures module-level redis instance."""
 
-def config(host='localhost', port=6379, db=0):
     global redis
     redis = Redis(host=host, port=port, db=db)
+
+
+init()
