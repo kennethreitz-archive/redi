@@ -60,6 +60,9 @@ class BaseRedis(object):
             except (UnicodeDecodeError, TypeError):
                 return o
 
+    def save(self, *args):
+        pass
+
 
 
 class RedisKey(BaseRedis):
@@ -130,12 +133,13 @@ class RedisList(RedisKey):
         self.key = key
 
 
-    def save(self, v, i):
-        pass
-
-
     def __repr__(self):
         return '<redis-list {0}>'.format(self.key)
+
+    @property
+    def _raw(self):
+        for v in self.redis.lrange(self.key, 0, -1):
+            yield v
 
 
     def __getitem__(self, i):
@@ -175,28 +179,29 @@ class RedisList(RedisKey):
         return self.redis.llen(self.key)
 
 
-
+    def __contains__(self, value):
+        i = self.index(value)
+        return (i is not None)
 
     def insert(self, index, value, before=True):
-        pivot = self[index]
+
+        refvalue = self[index]
+        where = 'BEFORE' if before else 'AFTER'
+
+        return self.redis.linsert(self.key, where, refvalue, value)
 
 
     def index(self, value):
         """Returns first found index of given value."""
-        for i, v in enumerate(self):
 
+        for i, v in enumerate(self):
             try:
                 if value.__dict__ == v.__dict__:
                     return i
             except AttributeError:
-
                 if value == v:
                     return i
 
-
-    def __contains__(self, value):
-        i = self.index(value)
-        return (i is not None)
 
     def append(self, value, right=True):
         v = self.to_redis(value)
@@ -262,7 +267,19 @@ class RedisList(RedisKey):
         except TypeError:
             return None
 
+    def find(self, *search):
+        """FINDS ALL TEH THINGS."""
 
+        for item in self._raw:
+            for s in search:
+
+                if callable(s):
+                    if s(item):
+                        yield item
+                else:
+
+                    if s in item:
+                        yield self.to_python(item)
 
 
 
