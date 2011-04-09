@@ -13,10 +13,9 @@ This module contains most of the functionality of redi.
 
 from UserDict import DictMixin
 
-
-from .config import redis, ENCODER, DECODER, STR_ENCODING
 from .utils import ListMixin, is_collection
 
+from . import config
 
 
 
@@ -25,7 +24,7 @@ class BaseRedis(object):
     datatype mapping."""
 
 
-    def __init__(self, redis=redis):
+    def __init__(self, redis=config.redis):
         super(BaseRedis, self).__init__()
         self.redis = redis
 
@@ -34,7 +33,7 @@ class BaseRedis(object):
     def to_redis(o):
         """Converts Python datatypes to Redis values."""
         if is_collection(o):
-            return ENCODER(o)
+            return config.ENCODER(o)
         else:
             return o
 
@@ -42,7 +41,7 @@ class BaseRedis(object):
     def to_python(self, o):
         """Converts Redis values to Python datatypes."""
         try:
-            v = DECODER(o)
+            v = config.DECODER(o)
 
             if isinstance(v, dict):
                 return SubDict(v, self.save)
@@ -55,7 +54,7 @@ class BaseRedis(object):
 
         except (ValueError, TypeError):
             try:
-                return unicode(o, STR_ENCODING)
+                return unicode(o, config.STR_ENCODING)
             except (UnicodeDecodeError, TypeError):
                 return o
 
@@ -64,7 +63,7 @@ class BaseRedis(object):
 class RedisKey(BaseRedis):
     """Contains methods that can be applied to any Redis key."""
 
-    def __init__(self, key, r=redis):
+    def __init__(self, key, r=config.redis):
         super(RedisKey, self).__init__(redis=r)
         self.key = key
 
@@ -88,7 +87,7 @@ class RedisValue(RedisKey):
     """Redis value of awesomeness."""
 
 
-    def __init__(self, key, r=redis):
+    def __init__(self, key, r=config.redis):
         super(RedisValue, self).__init__(key, r=r)
         self.key = key
 
@@ -234,11 +233,11 @@ class SubDict(DictMixin):
     def __init__(self, d, writer):
         self.data = d
         self.writer = writer
-        # self.__dict__.update(d)
 
 
     def write(self):
         """Writes Dict to Redis."""
+
         self.writer(self.data)
 
 
