@@ -189,6 +189,7 @@ class SubList(ListMixin):
         """Writes List to Redis."""
         self.writer(self.data)
 
+
     def _get_element(self, i):
         return self.data[i]
 
@@ -197,16 +198,20 @@ class SubList(ListMixin):
         self.data[i] = value
         self.write()
 
+
     def __len__(self):
         return len(self.data)
+
 
     def _resize_region(self, start, end, new_size):
 
         self.data[start:end] = [None] * new_size
         self.write()
 
+
     def _constructor(self, iter):
         return SubList(iter, self.writer)
+
 
     def __iter__(self):
         for item in self.data:
