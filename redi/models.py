@@ -32,6 +32,7 @@ class BaseRedis(object):
     @staticmethod
     def to_redis(o):
         """Converts Python datatypes to Redis values."""
+
         if is_collection(o):
             return config.encoder(o)
         else:
