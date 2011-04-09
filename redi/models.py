@@ -304,11 +304,15 @@ class SubList(ListMixin):
     def __init__(self, l, writer):
         self.data = l
         self.writer = writer
+        self.i = None
 
 
     def write(self):
         """Writes List to Redis."""
-        self.writer(self.data)
+        if self.i is not None:
+            self.writer(self.data, self.i)
+        else:
+            self.writer(self.data)
 
 
     def _get_element(self, i):
