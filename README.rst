@@ -29,6 +29,8 @@ Resis Value as a List: ::
     d.append(dict(blah='blah'))
     d.append([1,2,3,4])
 
+    # redis: "[{\"blah\": \"blah\"}, [1, 2, 3, 4]]"
+
 
 Resis Value as a Dict: ::
 
@@ -40,7 +42,6 @@ Resis Value as a Dict: ::
     d.data['values'] = [12, 82, 248.2]
 
     # redis: "{\"timestamp\": \"2011-04-09T03:39:03.204597\", \"values\": [12, 82, 248.2]}"
-    #
 
 
 **Simple list interface.** ::
