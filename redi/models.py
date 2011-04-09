@@ -19,9 +19,11 @@ from .utils import ListMixin, is_collection
 
 
 
+
 class BaseRedis(object):
     """Base Redis interface object. Provides Redis instance and
     datatype mapping."""
+
 
     def __init__(self, redis=redis):
         super(BaseRedis, self).__init__()
@@ -58,17 +60,23 @@ class BaseRedis(object):
                 return o
 
 
+
 class RedisKey(BaseRedis):
+    """Contains methods that can be applied to any Redis key."""
+
     def __init__(self, key, r=redis):
         super(RedisKey, self).__init__(redis=r)
         self.key = key
 
+
     def __repr__(self):
         return '<redis-key {0}>'.format(self.key)
+
 
     def delete(self):
         """Removes this key from Redis."""
         return self.redis.delete(self.key)
+
 
     def expire(self, s):
         """Expires this key from Redis in given seconds."""
@@ -83,12 +91,15 @@ class RedisValue(RedisKey):
         super(RedisValue, self).__init__(key, r=r)
         self.key = key
 
+
     def __repr__(self):
         return '<redis-value {0}>'.format(self.key)
+
 
     def save(self, value):
         v = self.to_redis(value)
         return self.redis.set(self.key, v)
+
 
     @property
     def value(self):
@@ -99,6 +110,7 @@ class RedisValue(RedisKey):
     @value.setter
     def value(self, value):
         self.save(value)
+
 
     @property
     def type(self):
@@ -116,35 +128,45 @@ class RedisList(BaseRedis):
         self.key = key
         self.sync()
 
+
     def __repr__(self):
         return '<redis-list {0}>'.format(self.key)
+
 
     def __getitem__(self, i):
         pass
 
+
     def __len__(self):
         return len(self._po)
+
 
     def append(self, *values):
         for value in value:
             self._po.append(value)
 
+
     def lpop(self):
         return self.pop(right=False)
 
+
     def rpop(self):
         return self.pop(right=True)
+
 
     def pop(self, right=True):
         # pops redis datasaet, resyncs?
         return None
 
+
     def sort(self, direction):
         pass
+
 
     def sync(self):
         """Syncs dataset."""
         pass
+
 
     def delete(self):
         redis.delete(key)
