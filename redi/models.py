@@ -136,21 +136,18 @@ class RedisList(RedisKey):
 
 
     def __getitem__(self, i):
-        if not isinstance(i, slice(i).__class__):
-            start = i
-            stop = i
-            single = True
+        is_single = not isinstance(i, slice)
+
+        if is_single:
+            value = self.redis.lindex(self.key, i)
+            values = self.to_python(value)
+
         else:
             start = 0 if i.start is None else i.start
             stop = -1 if i.stop is None else i.stop
-            single = False
 
-        values = self.redis.lrange(self.key, start, stop)
-
-        values = map(self.to_python, values)
-
-        if single:
-            values = values.pop()
+            values = self.redis.lrange(self.key, start, stop)
+            values = map(self.to_python, values)
 
         return values
 
