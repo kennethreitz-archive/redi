@@ -6,40 +6,42 @@ Redi: Redis Awesomeness
 I'm certainly not an efficiency expert. I just want to be able to do things easily.
 
 
+Features
+--------
+
+- Pythonic interface to Redis keys/values.
+- Everything is automatically serialized to JSON. This is configurable.
+
+
 Ideas
 -----
 
 - Offer limited type-specific search.
-- Treat objects as dicts.
-- Offer fileobject-like interface to values
-    + useful for iterating
 
-
-Everything should be serialized to JSON by default. Configurable.
 
 
 Example usage ::
 
-    from redisalchemy import RList, RSet, RString, search, find
+    import redi
 
-    students = RList('dashboard:students')
+    metadata = redi.value('dashboard:metadata')
 
-    students.append(dict(blah='blah'))
-    students.append(someobject)
+    metadata.append(dict(blah='blah'))
+    metadata.append(someobject)
 
-    students.contain('value')
+    # students.contain('value')
     #
 
 
-    students.any_contain('value')
+    # students.any_contain('value')
     #
 
-    students.any_contain_any('value')
+    # students.any_contain_any('value')
     # list of lists
     # list of dicts (keys)
 
 
-    for (i, student) in enumerate(students):
-        students[i] = srcub(student)
+    #for (i, student) in enumerate(students):
+    #    students[i] = srcub(student)
 
 
