@@ -14,10 +14,10 @@ from redis import Redis
 import jsonpickle
 
 
-ENCODER =  jsonpickle.encode
-DECODER = jsonpickle.decode
+encoder =  jsonpickle.encode
+decoder = jsonpickle.decode
 
-STR_ENCODING = 'utf8'
+str_codec = 'utf8'
 
 
 
@@ -27,13 +27,5 @@ def init(host='localhost', port=6379, db=0):
     global redis
     redis = Redis(host=host, port=port, db=db)
 
-def encoder(callback):
-    global ENCODER
-    ENCODER = callback
-
-
-def decoder(callback):
-    global DECODER
-    DECODER = callback
 
 init()

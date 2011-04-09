@@ -33,7 +33,7 @@ class BaseRedis(object):
     def to_redis(o):
         """Converts Python datatypes to Redis values."""
         if is_collection(o):
-            return config.ENCODER(o)
+            return config.encoder(o)
         else:
             return o
 
@@ -41,7 +41,7 @@ class BaseRedis(object):
     def to_python(self, o):
         """Converts Redis values to Python datatypes."""
         try:
-            v = config.DECODER(o)
+            v = config.decoder(o)
 
             if isinstance(v, dict):
                 return SubDict(v, self.save)
@@ -54,7 +54,7 @@ class BaseRedis(object):
 
         except (ValueError, TypeError):
             try:
-                return unicode(o, config.STR_ENCODING)
+                return unicode(o, config.str_codec)
             except (UnicodeDecodeError, TypeError):
                 return o
 
