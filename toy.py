@@ -1,9 +1,13 @@
 import redi
 
-d = redi.value('haystack:metalist')
+lst = redi.list(('haystack', 'metalist'))
 
-d.data = []
-d.data.append(dict(blah='blah'))
-d.data.append([1,2,3,4])
+# lst.append({'x': 'y'})
 
-print d._raw
+# for l in lst:
+    # print l
+
+lst[0].update({'a':'b'})
+
+print list(lst._raw)
+

@@ -148,12 +148,18 @@ class RedisList(RedisKey):
             yield v
 
 
+    def save(self, value, i=None):
+        """Save list."""
+        self[i] = value
+
+
     def __getitem__(self, i):
         is_single = not isinstance(i, slice)
 
         if is_single:
             value = self.redis.lindex(self.key, i)
             values = self.to_python(value)
+            values.i = i
 
         else:
             start = 0 if i.start is None else i.start
@@ -161,6 +167,9 @@ class RedisList(RedisKey):
 
             values = self.redis.lrange(self.key, start, stop)
             values = map(self.to_python, values)
+
+            for i in range(start, start+len(values)):
+                values[i].i = i
 
         return values
 
@@ -188,6 +197,7 @@ class RedisList(RedisKey):
     def __contains__(self, value):
         i = self.index(value)
         return (i is not None)
+
 
     def insert(self, index, value, before=True):
 
@@ -273,6 +283,7 @@ class RedisList(RedisKey):
         except TypeError:
             return None
 
+
     def find(self, *search):
         """FINDS ALL TEH THINGS."""
 
@@ -335,12 +346,14 @@ class SubDict(DictMixin):
     def __init__(self, d, writer):
         self.data = d
         self.writer = writer
-
+        self.i = None
 
     def write(self):
         """Writes Dict to Redis."""
-
-        self.writer(self.data)
+        if self.i is not None:
+            self.writer(self.data, self.i)
+        else:
+            self.writer(self.data)
 
 
     def __getitem__(self, item):

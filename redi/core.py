@@ -26,6 +26,7 @@ def _expand_key(key):
     return key
 
 
+
 def value(key, r=config.redis):
     """Return RedisValue instance for given key.
     Optional `r` keyword argument sets Redis instance.
