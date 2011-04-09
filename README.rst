@@ -11,6 +11,7 @@ Features
 
 - Pythonic interface to Redis keys/values.
 - Everything is automatically serialized to JSON. This is configurable.
+- ^^ Including custom objects.
 - Limited type-specific search.
 
 
