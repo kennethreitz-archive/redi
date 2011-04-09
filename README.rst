@@ -57,3 +57,9 @@ Resis Value as a Dict: ::
         do_something(s_found)
 
 
+Advanced
+--------
+
+- The de/serializing interface is completely overridable. You swap JSON out with YAML w/ two lines of code.
+- You can use blocking pops with configurable timeouts.
+
