@@ -168,11 +168,31 @@ class RedisList(BaseRedis):
         self.sync()
 
 
-class RedisValue(BaseRedis):
+
+
+class RedisKey(BaseRedis):
+    def __init__(self, key, r=redis):
+        super(RedisKey, self).__init__(redis=r)
+        self.key = key
+
+    def __repr__(self):
+        return '<redis-key {0}>'.format(self.key)
+
+    def delete(self):
+        """Removes this key from Redis."""
+        return self.redis.delete(self.key)
+
+    def expire(self, s):
+        """Expires this key from Redis in given seconds."""
+        return self.redis.expire(self.key, s)
+
+
+
+class RedisValue(RedisKey):
     """Redis value of awesomeness."""
 
     def __init__(self, key, r=redis):
-        super(RedisValue, self).__init__(redis=r)
+        super(RedisValue, self).__init__(key, r=r)
         self.key = key
 
     def __repr__(self):
@@ -196,8 +216,3 @@ class RedisValue(BaseRedis):
     def type(self):
         v = self.redis.get(self.key)
         return type(self.value)
-
-    def delete(self):
-        """Removes this key from Redis."""
-        return self.redis.delete(self.key)
-
