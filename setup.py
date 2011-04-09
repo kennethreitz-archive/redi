@@ -18,19 +18,19 @@ if sys.argv[-1] == "publish":
     publish()
     sys.exit()
 
-required = ['redis-py']
+required = ['redis']
 
 setup(
     name='redi',
     version='0.0.1',
-    version='Python middle layer for interacting with Redis data easily.',
-    long_description='\n\n',
+    description='Python middle layer for interacting with Redis data easily.',
+    long_description=open('README.rst').read(),
     author='Kenneth Reitz',
     author_email='me@kennethreitz.com',
     url='https://github.com/kennethreitz/redi',
     packages= [
         'redi',
-        'clint.packages', 'clint.packages.jsonpickle'
+        'redi.packages', 'redi.packages.jsonpickle'
     ],
     install_requires=required,
     license='ISC',
