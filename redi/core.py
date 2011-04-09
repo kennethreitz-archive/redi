@@ -27,18 +27,18 @@ def _expand_key(key):
 
 
 
-def value(key, r=config.redis):
+def value(key, redis=config.redis):
     """Return RedisValue instance for given key.
     Optional `r` keyword argument sets Redis instance.
     """
 
-    return RedisValue(_expand_key(key), r=r)
+    return RedisValue(_expand_key(key), r=redis)
 
 
 
-def list(key, r=config.redis):
+def list(key, redis=config.redis):
     """Return RedisList instance for given key.
     Optional `r` keyword argument sets Redis instance.
     """
 
-    return RedisList(_expand_key(key), r=r)
+    return RedisList(_expand_key(key), r=redis)
