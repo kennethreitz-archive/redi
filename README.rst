@@ -24,13 +24,10 @@ Example usage ::
 
     import redi
 
-    metadata = redi.value('dashboard:metadata')
+    with redi.value('dashboard:metadata') as m:
+        m.append(dict(blah='blah'))
+        m.append([1,2,3,4])
 
-    metadata.append(dict(blah='blah'))
-    metadata.append(someobject)
-
-    # students.contain('value')
-    #
 
 
     # students.any_contain('value')

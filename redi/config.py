@@ -27,5 +27,13 @@ def init(host='localhost', port=6379, db=0):
     global redis
     redis = Redis(host=host, port=port, db=db)
 
+def encoder(callback):
+    global ENCODER
+    ENCODER = callback
+
+
+def decoder(callback):
+    global DECODER
+    DECODER = callback
 
 init()

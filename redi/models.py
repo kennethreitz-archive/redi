@@ -87,6 +87,7 @@ class RedisKey(BaseRedis):
 class RedisValue(RedisKey):
     """Redis value of awesomeness."""
 
+
     def __init__(self, key, r=redis):
         super(RedisValue, self).__init__(key, r=r)
         self.key = key
@@ -95,10 +96,18 @@ class RedisValue(RedisKey):
     def __repr__(self):
         return '<redis-value {0}>'.format(self.key)
 
+    def __enter__(self):
+        pass
+
+    def __exit__(self):
+        # self._pause_writes = False
+        pass
+
 
     def save(self, value):
         v = self.to_redis(value)
         return self.redis.set(self.key, v)
+
 
 
     @property
