@@ -33,6 +33,9 @@ class BaseRedis(object):
     def to_redis(o):
         """Converts Python datatypes to Redis values."""
 
+        if isinstance(o, SubList) or isinstance(o, SubDict):
+            o = o.data
+
         if is_collection(o):
             return config.encoder(o)
         else:
@@ -128,8 +131,10 @@ class RedisList(RedisKey):
         super(RedisList, self).__init__(key, r=r)
         self.key = key
 
+
     def save(self, v, i):
         pass
+
 
     def __repr__(self):
         return '<redis-list {0}>'.format(self.key)
@@ -151,18 +156,28 @@ class RedisList(RedisKey):
 
         return values
 
+
     def __setitem__(self, i, value):
-        v = self.to_python(value)
+        v = self.to_redis(value)
         return self.redis.lset(self.key, i, v)
+
+
+    def __delitem__(self, i):
+
+        for value in self[i]:
+            self.redis.lrem(self.key, value)
 
 
     def __iter__(self):
         for v in self[:]:
             yield v
 
-
     def __len__(self):
         return self.redis.llen(self.key)
+
+
+    def insert(self, index, value):
+        pass
 
 
     def append(self, value, right=True):
