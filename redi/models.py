@@ -175,22 +175,27 @@ class RedisList(RedisKey):
 
 
     def rpush(self, value):
+        """Redis RPUSH."""
         self.append(value, right=True)
 
 
     def lpush(self, value):
+        """Redis LPUSH."""
         self.append(value, right=False)
 
 
     def lpop(self):
+        """Redis LPOP."""
         return self.pop(right=False)
 
 
     def rpop(self):
+        """Redis RPOP."""
         return self.pop(right=True)
 
 
     def pop(self, right=True):
+        """Redis (R|L)POP."""
 
         if right:
             v = self.redis.lpop(self.key)
@@ -202,12 +207,17 @@ class RedisList(RedisKey):
 
 
     def brpop(self, timeout=config.block_timeout):
+        """Redis BRPOP."""
         return self.bpop(timeout, right=True)
 
+
     def blpop(self, timeout=config.block_timeout):
+        """Redis BLPOP."""
         return self.bpop(timeout, right=False)
 
+
     def bpop(self, timeout=config.block_timeout, right=True):
+        """Redis B(R|L)POP."""
 
         if right:
             v = self.redis.brpop(self.key, timeout)
@@ -218,11 +228,6 @@ class RedisList(RedisKey):
             return self.to_python(v[1])
         except TypeError:
             return None
-
-
-
-    def sort(self, direction):
-        pass
 
 
 
