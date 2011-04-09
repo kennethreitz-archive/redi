@@ -194,7 +194,7 @@ class RedisList(RedisKey):
 
 
     def pop(self, right=True):
-        # pops redis datasaet, resyncs?
+
         if right:
             v = self.redis.lpop(self.key)
         else:
@@ -202,6 +202,26 @@ class RedisList(RedisKey):
 
 
         return self.to_python(v)
+
+
+    def brpop(self, timeout=config.block_timeout):
+        return self.bpop(timeout, right=True)
+
+    def blpop(self, timeout=config.block_timeout):
+        return self.bpop(timeout, right=False)
+
+    def bpop(self, timeout=config.block_timeout, right=True):
+
+        if right:
+            v = self.redis.brpop(self.key, timeout)
+        else:
+            v = self.redis.blpop(self.key, timeout)
+
+        try:
+            return self.to_python(v[1])
+        except TypeError:
+            return None
+
 
 
     def sort(self, direction):
