@@ -21,28 +21,28 @@ Usage
 
 **Simple value interface.**
 
-Resis Value as a List: ::
+  - Resis Value as a List: ::
 
-    import redi
+      import redi
 
-    d = redi.value('haystack:metalist')
+      d = redi.value('haystack:metalist')
 
-    d.append(dict(blah='blah'))
-    d.append([1,2,3,4])
+      d.append(dict(blah='blah'))
+      d.append([1,2,3,4])
 
-    # redis: "[{\"blah\": \"blah\"}, [1, 2, 3, 4]]"
+      # redis: "[{\"blah\": \"blah\"}, [1, 2, 3, 4]]"
 
 
-Resis Value as a Dict: ::
+  - Resis Value as a Dict: ::
 
-    d = redi.value('haystack:metadict')
+      d = redi.value('haystack:metadict')
 
-    d.data = {}
+      d.data = {}
 
-    d.data['timestamp'] = datetime.now().isoformat()
-    d.data['values'] = [12, 82, 248.2]
+      d.data['timestamp'] = datetime.now().isoformat()
+      d.data['values'] = [12, 82, 248.2]
 
-    # redis: "{\"timestamp\": \"2011-04-09T03:39:03.204597\", \"values\": [12, 82, 248.2]}"
+      # redis: "{\"timestamp\": \"2011-04-09T03:39:03.204597\", \"values\": [  12, 82, 248.2]}"
 
 
 **Simple list interface.** ::
@@ -76,7 +76,7 @@ But, you really shouldn't do that.
 License
 -------
 
-The ISC License.::
+The ISC License. ::
 
     Copyright (c) 2011, Kenneth Reitz <me@kennethreitz.com>
 
