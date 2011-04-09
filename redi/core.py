@@ -12,6 +12,7 @@ Simple, eh?
 
 
 from . import config
+from .config import init
 from .models import *
 from .utils import is_collection
 
