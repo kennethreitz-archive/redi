@@ -272,12 +272,10 @@ class RedisList(RedisKey):
 
         for item in self._raw:
             for s in search:
-
                 if callable(s):
                     if s(item):
                         yield item
                 else:
-
                     if s in item:
                         yield self.to_python(item)
 
