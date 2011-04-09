@@ -50,13 +50,16 @@ Usage
 - **Redis List as a List** ::
 
 
-    students = redi.list('haystack:students')
+    >>> students = redi.list('haystack:students')
 
-    print students[3].get('last_name')
-    del students[3]
+    >>> students[3]
+    {'first': 'kenneth', 'last': 'unknown'}
 
-    for s_found in students.find('reitz'):
-        do_something(s_found)
+    >>> students[3].update(last='reitz')
+
+    >>> list(students.find('reitz'))
+    [{'first': 'kenneth', 'last': 'reitz'}]
+
 
 
 Installation
