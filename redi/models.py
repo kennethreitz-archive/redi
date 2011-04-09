@@ -51,8 +51,17 @@ class BaseRedis(object):
             elif is_collection(v):
                 return SubList(v, self.save)
 
-            else:
-                return v
+            try:
+                return int(v)
+            except ValueError:
+                pass
+
+            try:
+                return float(v)
+            except ValueError:
+                pass
+
+            return v
 
         except (ValueError, TypeError):
             try:
@@ -150,6 +159,7 @@ class RedisList(RedisKey):
 
     def save(self, value, i=None):
         """Save list."""
+
         self[i] = value
 
 
@@ -159,7 +169,11 @@ class RedisList(RedisKey):
         if is_single:
             value = self.redis.lindex(self.key, i)
             values = self.to_python(value)
-            values.i = i
+            try:
+                values.i = i
+            except AttributeError:
+                pass
+
 
         else:
             start = 0 if i.start is None else i.start
