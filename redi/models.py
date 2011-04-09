@@ -97,8 +97,14 @@ class RedisValue(RedisKey):
         self.key = key
 
 
+    @property
+    def _raw(self):
+        return self.redis.get(self.key)
+
+
     def __repr__(self):
         return '<redis-value {0}>'.format(self.key)
+
 
     def save(self, value):
         v = self.to_redis(value)
@@ -135,6 +141,7 @@ class RedisList(RedisKey):
 
     def __repr__(self):
         return '<redis-list {0}>'.format(self.key)
+
 
     @property
     def _raw(self):
