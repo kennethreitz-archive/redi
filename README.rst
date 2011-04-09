@@ -1,9 +1,9 @@
 Redi: Redis Awesomeness
 =======================
 
-**Warning:** this may or may not be a good idea. I am not an efficiency expert.
+Redi is Redis that's ready for Python. It's powered by redis-py, and it's awesome.
 
-    I don't need it to be super efficient. I just want it to work easily without being incredibly stupid.
+Essentially, **redi** allows you to interact with your Redis datatypes as if they were native Python objects.
 
 
 Features
