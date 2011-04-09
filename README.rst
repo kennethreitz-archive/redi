@@ -19,9 +19,13 @@ Features
 Usage
 -----
 
-- **Resis Value as a List** ::
+- **Easy to import** ::
 
     import redi
+
+
+- **Resis Value as a List** ::
+
 
     d = redi.value('haystack:metalist')
 
@@ -43,7 +47,7 @@ Usage
     # redis: "{\"timestamp\": \"2011-04-09T03:39:03.204597\", \"values\": [  12, 82, 248.2]}"
 
 
-- **Simple list interface.** ::
+- **Redis List interface.** ::
 
 
     students = redi.list('haystack:students')
