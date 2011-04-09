@@ -65,7 +65,7 @@ Usage
 Installation
 ------------
 
-To install clint, simply: ::
+To install redi, simply: ::
 
     $ pip install redi
 

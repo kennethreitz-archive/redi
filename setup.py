@@ -6,9 +6,6 @@ import sys
 
 from distutils.core import setup
 
-import clint
-
-
 
 def publish():
     """Publish to PyPi"""
