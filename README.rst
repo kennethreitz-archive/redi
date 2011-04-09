@@ -1,9 +1,9 @@
 Redi: Redis Awesomeness
 =======================
 
-**Warning:** this may or may not be a good idea.
+**Warning:** this may or may not be a good idea. I am not an efficiency expert.
 
-I'm certainly not an efficiency expert. I just want to be able to do things easily.
+> I don't need it to be super efficient. I just want it to work easily without being incredibly stupid.
 
 
 Features
