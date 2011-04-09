@@ -17,7 +17,7 @@ class Test(object):
 # # meta.data.append([1,2,3,4])
 
 
-stack = redi.list('stack')
+stack = redi.list(('stack', 'this'))
 
 
 # stack.append(Test())

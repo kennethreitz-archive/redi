@@ -16,6 +16,7 @@ import jsonpickle
 
 encoder =  jsonpickle.encode
 decoder = jsonpickle.decode
+namespace_delimiter = ':'
 str_codec = 'utf8'
 block_timeout = 10
 
