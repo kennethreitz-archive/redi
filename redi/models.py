@@ -52,12 +52,14 @@ class BaseRedis(object):
                 return SubList(v, self.save)
 
             try:
-                return int(v)
+                if not isinstance(v, float):
+                    return int(v)
             except ValueError:
                 pass
 
             try:
-                return float(v)
+                if not isinstance(v, int):
+                    return float(v)
             except ValueError:
                 pass
 
