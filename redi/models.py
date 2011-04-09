@@ -33,13 +33,11 @@ class BaseRedis(object):
     def to_redis(o):
         """Converts Python datatypes to Redis values."""
 
+        # don't serialize internal datatype classesf
         if isinstance(o, SubList) or isinstance(o, SubDict):
             o = o.data
 
-        if is_collection(o):
-            return config.encoder(o)
-        else:
-            return o
+        return config.encoder(o)
 
 
     def to_python(self, o):
@@ -54,7 +52,7 @@ class BaseRedis(object):
                 return SubList(v, self.save)
 
             else:
-                return o
+                return v
 
         except (ValueError, TypeError):
             try:
@@ -172,31 +170,51 @@ class RedisList(RedisKey):
         for v in self[:]:
             yield v
 
+
     def __len__(self):
         return self.redis.llen(self.key)
 
 
-    def insert(self, index, value):
-        pass
 
+
+    def insert(self, index, value, before=True):
+        pivot = self[index]
+
+
+    def index(self, value):
+        """Returns first found index of given value."""
+        for i, v in enumerate(self):
+
+            try:
+                if value.__dict__ == v.__dict__:
+                    return i
+            except AttributeError:
+
+                if value == v:
+                    return i
+
+
+    def __contains__(self, value):
+        i = self.index(value)
+        return (i is not None)
 
     def append(self, value, right=True):
         v = self.to_redis(value)
 
         if right:
-            self.redis.rpush(self.key, v)
+            return self.redis.rpush(self.key, v)
         else:
-            self.redis.lpush(self.key, v)
+            return self.redis.lpush(self.key, v)
 
 
     def rpush(self, value):
         """Redis RPUSH."""
-        self.append(value, right=True)
+        return self.append(value, right=True)
 
 
     def lpush(self, value):
         """Redis LPUSH."""
-        self.append(value, right=False)
+        return self.append(value, right=False)
 
 
     def lpop(self):
