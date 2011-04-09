@@ -57,27 +57,26 @@ Resis Value as a Dict: ::
         do_something(s_found)
 
 
-Advanced
---------
+Installation
+------------
 
-- The de/serializing interface is completely overridable. You swap JSON out with YAML w/ two lines of code.
-- You can use blocking pops with configurable timeouts.
+To install clint, simply: ::
+
+    $ pip install redi
+
+Or, if you absolutely must: ::
+
+    $ easy_install redi
 
 
-Roadmap
--------
+But, you really shouldn't do that.
 
-- Polish
-- Add Sets (maybe)
-- SHIP IT
-- Tests
-- Documentation
 
 
 License
 -------
 
-::
+The ISC License.::
 
     Copyright (c) 2011, Kenneth Reitz <me@kennethreitz.com>
 
@@ -92,3 +91,28 @@ License
     WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
     ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
     OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+
+Contribute
+----------
+
+If you'd like to contribute, simply fork the repository, commit your changes to the develop branch (or branch off of it), and send a pull request. Make sure you add yourself to AUTHORS.
+
+
+
+Advanced
+--------
+
+- The de/serializing interface is completely overridable. You can fully swap JSON out with YAML w/ two lines of code.
+- You can use blocking pops with configurable timeouts.
+- Namespace aware!
+
+
+Roadmap
+-------
+
+- Polish
+- Add Sets (maybe)
+- SHIP IT
+- Tests
+- Documentation
