@@ -21,8 +21,9 @@ def _expand_key(key):
     """Expands tupled keys."""
 
     if is_collection(key):
-        return config.namespace_delimiter.join(key)
+        key = config.namespace_delimiter.join(key)
 
+    return key
 
 
 def value(key, r=config.redis):
