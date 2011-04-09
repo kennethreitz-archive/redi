@@ -47,7 +47,7 @@ Usage
     # redis: "{\"timestamp\": \"2011-04-09T03:39:03.204597\", \"values\": [  12, 82, 248.2]}"
 
 
-- **Redis List interface.** ::
+- **Redis List as a List** ::
 
 
     students = redi.list('haystack:students')
