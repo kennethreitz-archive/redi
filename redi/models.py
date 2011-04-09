@@ -96,14 +96,6 @@ class RedisValue(RedisKey):
     def __repr__(self):
         return '<redis-value {0}>'.format(self.key)
 
-    def __enter__(self):
-        pass
-
-    def __exit__(self):
-        # self._pause_writes = False
-        pass
-
-
     def save(self, value):
         v = self.to_redis(value)
         return self.redis.set(self.key, v)
@@ -111,13 +103,13 @@ class RedisValue(RedisKey):
 
 
     @property
-    def value(self):
+    def data(self):
         v = self.redis.get(self.key)
         return self.to_python(v)
 
 
-    @value.setter
-    def value(self, value):
+    @data.setter
+    def data(self, value):
         self.save(value)
 
 
@@ -129,30 +121,66 @@ class RedisValue(RedisKey):
 
 
 
-class RedisList(BaseRedis):
+class RedisList(RedisKey):
     """Redis list of awesomeness."""
 
-    def __init__(self, key):
-        super(RedisList, self).__init__()
+    def __init__(self, key, r=config.redis):
+        super(RedisList, self).__init__(key, r=r)
         self.key = key
         self.sync()
 
+    def save(self, v, i):
+        pass
 
     def __repr__(self):
         return '<redis-list {0}>'.format(self.key)
 
 
     def __getitem__(self, i):
-        pass
+        if not isinstance(i, slice(i).__class__):
+            start = i
+            stop = i
+            single = True
+        else:
+            start = 0 if i.start is None else i.start
+            stop = -1 if i.stop is None else i.stop
+            single = False
 
+        values = self.redis.lrange(self.key, start, stop)
+
+        values = map(self.to_python, values)
+
+        if single:
+            values = values.pop()
+
+        return values
+
+    def __setitem__(self, i, value):
+        v = self.to_python(value)
+        return self.redis.lset(self.key, i, v)
+
+
+    def __iter__(self):
+        for v in self[:]:
+            yield v
 
     def __len__(self):
-        return len(self._po)
+        return self.redis.llen(self.key)
 
 
-    def append(self, *values):
-        for value in value:
-            self._po.append(value)
+    def append(self, value, right=True):
+        v = self.to_redis(value)
+
+        if right:
+            self.redis.rpush(self.key, v)
+        else:
+            self.redis.lpush(self.key, v)
+
+    def rpush(self, value):
+        self.append(value, right=True)
+
+    def lpush(self, value):
+        self.append(value, right=False)
 
 
     def lpop(self):
@@ -178,7 +206,7 @@ class RedisList(BaseRedis):
 
 
     def delete(self):
-        redis.delete(key)
+        self.redis.delete(self.key)
         self.sync()
 
 
@@ -254,7 +282,8 @@ class SubDict(DictMixin):
     def __repr__(self):
         return repr(self.data)
 
-
+    def keys(self):
+        return self.data.keys()
 
 
 
