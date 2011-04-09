@@ -185,7 +185,11 @@ class RedisList(RedisKey):
             values = map(self.to_python, values)
 
             for i in range(start, start+len(values)):
-                values[i].i = i
+                try:
+                    values[i].i = i
+                except AttributeError:
+                    pass
+
 
         return values
 
