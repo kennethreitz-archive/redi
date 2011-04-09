@@ -244,6 +244,11 @@ class RedisList(RedisKey):
             return self.redis.lpush(self.key, v)
 
 
+    def extend(self, values):
+        for value in values:
+             v = self.to_redis(value)
+             self.append(v)
+
     def rpush(self, value):
         """Redis RPUSH."""
         return self.append(value, right=True)
