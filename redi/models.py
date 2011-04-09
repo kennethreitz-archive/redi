@@ -127,7 +127,6 @@ class RedisList(RedisKey):
     def __init__(self, key, r=config.redis):
         super(RedisList, self).__init__(key, r=r)
         self.key = key
-        self.sync()
 
     def save(self, v, i):
         pass
@@ -164,6 +163,7 @@ class RedisList(RedisKey):
         for v in self[:]:
             yield v
 
+
     def __len__(self):
         return self.redis.llen(self.key)
 
@@ -176,8 +176,10 @@ class RedisList(RedisKey):
         else:
             self.redis.lpush(self.key, v)
 
+
     def rpush(self, value):
         self.append(value, right=True)
+
 
     def lpush(self, value):
         self.append(value, right=False)
@@ -193,22 +195,17 @@ class RedisList(RedisKey):
 
     def pop(self, right=True):
         # pops redis datasaet, resyncs?
-        return None
+        if right:
+            v = self.redis.lpop(self.key)
+        else:
+            v = self.redis.rpop(self.key)
+
+
+        return self.to_python(v)
 
 
     def sort(self, direction):
         pass
-
-
-    def sync(self):
-        """Syncs dataset."""
-        pass
-
-
-    def delete(self):
-        self.redis.delete(self.key)
-        self.sync()
-
 
 
 
