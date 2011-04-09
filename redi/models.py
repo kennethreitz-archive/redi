@@ -111,7 +111,6 @@ class RedisValue(RedisKey):
         return self.redis.set(self.key, v)
 
 
-
     @property
     def data(self):
         v = self.redis.get(self.key)
