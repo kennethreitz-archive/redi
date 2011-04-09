@@ -24,21 +24,17 @@ Example usage ::
 
     import redi
 
-    with redi.value('dashboard:metadata') as m:
-        m.append(dict(blah='blah'))
-        m.append([1,2,3,4])
+    d = redi.value('dashboard:metadata'):
+
+    d.append(dict(blah='blah'))
+    d.append([1,2,3,4])
 
 
+    students = redi.list('dashboard:students'):
 
-    # students.any_contain('value')
-    #
+    print students[3].get('last_name')
 
-    # students.any_contain_any('value')
-    # list of lists
-    # list of dicts (keys)
-
-
-    #for (i, student) in enumerate(students):
-    #    students[i] = srcub(student)
+    for s_found in students.find('reitz'):
+        do_something(s_found)
 
 
