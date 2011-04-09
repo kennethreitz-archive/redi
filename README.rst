@@ -19,9 +19,7 @@ Features
 Usage
 -----
 
-**Simple value interface.**
-
-- Resis Value as a List: ::
+- **Resis Value as a List** ::
 
     import redi
 
@@ -33,7 +31,7 @@ Usage
     # redis: "[{\"blah\": \"blah\"}, [1, 2, 3, 4]]"
 
 
-- Resis Value as a Dict: ::
+- **Resis Value as a Dict** ::
 
     d = redi.value('haystack:metadict')
 
@@ -45,7 +43,7 @@ Usage
     # redis: "{\"timestamp\": \"2011-04-09T03:39:03.204597\", \"values\": [  12, 82, 248.2]}"
 
 
-**Simple list interface.** ::
+- **Simple list interface.** ::
 
 
     students = redi.list('haystack:students')
