@@ -11,17 +11,43 @@ Simple, eh?
 """
 
 
-from . import config, models, db, ext
+from . import config, models, db, ext, utils
 
 
-def value(key, redis=config.redis):
+def key(key, redis=config.redis, default=None):
+    """Return Redi Dattype instance for given key.
+    Optional `redis` keyword argument sets Redis instance.
+    """
+
+    return ext.auto_type(
+        utils.compress_key(key), redis=config.redis, default=default
+    )
+
+
+def list_string(key, redis=config.redis):
     """Return RedisValue instance for given key.
     Optional `redis` keyword argument sets Redis instance.
     """
 
 
-    return models.RedisValue(ext.expand_key(key), redis=config.redis)
+    return models.RedisListString(utils.compress_key(key), redis=config.redis)
 
+
+def dict_string(key, redis=config.redis):
+    """Return RedisValue instance for given key.
+    Optional `redis` keyword argument sets Redis instance.
+    """
+
+
+    return models.RedisDictString(utils.compress_key(key), redis=config.redis)
+
+
+def string(key, redis=config.redis):
+    """Return RedisValue instance for given key.
+    Optional `redis` keyword argument sets Redis instance.
+    """
+
+    return models.RedisString(utils.compress_key(key), redis=config.redis)
 
 
 def list(key, redis=config.redis):
@@ -29,12 +55,6 @@ def list(key, redis=config.redis):
     Optional `redis` keyword argument sets Redis instance.
     """
 
-    return models.RedisList(ext.expand_key(key), redis=config.redis)
+    return models.RedisList(utils.compress_key(key), redis=config.redis)
 
 
-def key(key, redis=config.redis):
-    """Return Redi Dattype instance for given key.
-    Optional `redis` keyword argument sets Redis instance.
-    """
-
-    return ext.auto_type(key, redis=config.redis)
