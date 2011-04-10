@@ -9,6 +9,7 @@ This module contains most of the functionality of redi.
 
 """
 
+from random import random
 
 
 from UserDict import DictMixin
@@ -134,9 +135,8 @@ class RedisKey(BaseRedis):
 
 
 
-class RedisValue(RedisKey):
+class RedisValue(RedisKey, ListMixin, DictMixin):
     """Redis value of awesomeness."""
-
 
     def __init__(self, key, redis=None):
         super(RedisValue, self).__init__(key, redis=redis)
@@ -144,16 +144,18 @@ class RedisValue(RedisKey):
         self.key = key
 
 
-    @property
-    def _raw(self):
-        return self.redis.get(self.key)
-
-
     def __repr__(self):
         return '<redis-value {0}>'.format(self.key)
 
 
+    @property
+    def _raw(self):
+        """Returns raw Redis data."""
+        return self.redis.get(self.key)
+
+
     def save(self, value):
+        """Saves current value to Database."""
         v = self.to_redis(value)
         return self.redis.set(self.key, v)
 
@@ -161,7 +163,13 @@ class RedisValue(RedisKey):
     @property
     def data(self):
         v = self.redis.get(self.key)
-        return self.to_python(v)
+        v = self.to_python(v)
+
+        for attr in self._DICT_ATTRS:
+            # getattr(self, attr) = None
+            pass
+
+        return v
 
 
     @data.setter
@@ -171,8 +179,42 @@ class RedisValue(RedisKey):
 
     @property
     def type(self):
-        v = self.redis.get(self.key)
-        return type(self.data)
+        return self.data.__class__
+
+
+    #### Explicit Magic Methods for various datatypes ####
+
+    def __getitem__(self, item):
+        return self.data.__getitem__(item)
+
+    def get(self, item):
+        return self.data.get(item)
+
+    def __setitem__(self, k, v):
+        return self.data.__setitem__(k, v)
+
+    def keys(self):
+        return self.data.keys()
+
+    def write(self):
+        return self.data.write()
+
+    def _get_element(self, i):
+        return self.data._get_element(i)
+
+    def _set_element(self, i, value):
+        return self.data._set_element(i, value)
+
+    def __len__(self):
+        return self.data.__len__()
+
+    def _resize_region(self, start, end, new_size):
+        return self.data._resize_region(start, end, new_size)
+
+    def _constructor(self, iter):
+        return self.data._constructor(iter)
+
+
 
 
 
@@ -181,10 +223,7 @@ class RedisList(RedisKey):
 
     def __init__(self, key, redis=None):
         super(RedisList, self).__init__(key, redis=redis)
-        # print r.db
-        # print self.redis
         self.key = key
-
 
 
     def __repr__(self):
