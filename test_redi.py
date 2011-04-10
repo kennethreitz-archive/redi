@@ -17,23 +17,36 @@ class RediTestSuite(unittest.TestCase):
 
     def setUp(self):
 
-
         redi.config.init(db=DB)
-
-
 
 
     def tearDown(self):
 
         redi.db.flush()
+        self.assertEqual(len(redi.db.keys('*')), 0)
 
-        assert len(redi.db.keys('*')) is 0
 
-
-    def test_redi(self):
+    def test_value_as_dict(self):
 
         a = redi.value('test')
-        a.data = 'hi'
+        self.assertEqual(a.type, type(None))
+
+        a.data = {}
+        self.assertEqual(a.type, redi.models.SubDict)
+
+        a['face'] = 'book'
+
+        print a._raw
+
+
+
+        a.delete()
+        self.assertEqual(a.data, None)
+
+
+    def test_value_as_list(self):
+
+        a = redi.value('test')
 
 
     def test_key_rename_unsafe(self):
@@ -113,13 +126,12 @@ class RediTestSuite(unittest.TestCase):
         b.delete()
 
 
+
 if __name__ == '__main__':
 
     DB = os.environ.get('REDI_TEST_DB_NUM', None)
 
     if DB is None:
         raise Exception('REDI_TEST_DB_NUM env must be set.')
-
-
 
     unittest.main()
