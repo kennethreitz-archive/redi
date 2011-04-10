@@ -172,7 +172,7 @@ class RedisValue(RedisKey):
     @property
     def type(self):
         v = self.redis.get(self.key)
-        return type(self.value)
+        return type(self.data)
 
 
 
