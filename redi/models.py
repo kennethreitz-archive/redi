@@ -147,8 +147,9 @@ class RedisString(RedisKey):
 
         self.key = key
 
+
     def __repr__(self):
-        return '<redis-value {0}>'.format(self.key)
+        return '<redis-string {0}>'.format(self.key)
 
 
     @property
