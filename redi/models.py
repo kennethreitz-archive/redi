@@ -21,13 +21,13 @@ from clint.textui import colored
 
 
 
-class BaseRedis(object):
-    """Base Redis interface object. Provides Redis instance and
-    datatype mapping."""
 
+class RedisKey(object):
+    """Contains methods that can be applied to any Redis key."""
 
-    def __init__(self, redis=None):
-        super(BaseRedis, self).__init__()
+    def __init__(self, key, redis=None):
+
+        self.key = key
 
         if redis is None:
             self.redis = config.redis
@@ -35,62 +35,6 @@ class BaseRedis(object):
         self.redis = redis
 
         self.uuid = uuid.uuid4().hex
-
-
-    @staticmethod
-    def to_redis(o):
-        """Converts Python datatypes to Redis values."""
-
-        # don't serialize internal datatype classesf
-        if isinstance(o, SubList) or isinstance(o, SubDict):
-            o = o.data
-
-        return config.encoder(o)
-
-
-    def to_python(self, o):
-        """Converts Redis values to Python datatypes."""
-        try:
-            v = config.decoder(o)
-
-            if isinstance(v, dict):
-                return SubDict(v, self.save)
-
-            elif is_collection(v):
-                return SubList(v, self.save)
-
-            try:
-                if not isinstance(v, float):
-                    return int(v)
-            except ValueError:
-                pass
-
-            try:
-                if not isinstance(v, int):
-                    return float(v)
-            except ValueError:
-                pass
-
-            return v
-
-        except (ValueError, TypeError):
-            try:
-                return unicode(o, config.str_codec)
-            except (UnicodeDecodeError, TypeError):
-                return o
-
-    def save(self, *args):
-        pass
-
-
-
-class RedisKey(BaseRedis):
-    """Contains methods that can be applied to any Redis key."""
-
-    def __init__(self, key, redis=None):
-        super(RedisKey, self).__init__(redis=redis)
-
-        self.key = key
 
 
     def __repr__(self):
@@ -136,6 +80,53 @@ class RedisKey(BaseRedis):
 
         for key in keys:
             yield key
+
+
+    @staticmethod
+    def to_redis(o):
+        """Converts Python datatypes to Redis values."""
+
+        # don't serialize internal datatype classesf
+        if isinstance(o, SubList) or isinstance(o, SubDict):
+            o = o.data
+
+        return config.encoder(o)
+
+
+    def to_python(self, o):
+        """Converts Redis values to Python datatypes."""
+        try:
+            v = config.decoder(o)
+
+            if isinstance(v, dict):
+                return SubDict(v, self.save)
+
+            elif is_collection(v):
+                return SubList(v, self.save)
+
+            try:
+                if not isinstance(v, float):
+                    return int(v)
+            except ValueError:
+                pass
+
+            try:
+                if not isinstance(v, int):
+                    return float(v)
+            except ValueError:
+                pass
+
+            return v
+
+        except (ValueError, TypeError):
+            try:
+                return unicode(o, config.str_codec)
+            except (UnicodeDecodeError, TypeError):
+                return o
+
+
+    def save(self, *args):
+        pass
 
 
 
