@@ -52,7 +52,11 @@ def auto_type(key, redis=None, default=None):
                 datatype = 'dict-string'
             elif isinstance(test_string, list):
                 datatype = 'list-string'
-            elif isinstance(test_string, str):
+            elif isinstance(test_string, basestring):
+                datatype = 'string'
+            elif isinstance(test_string, int):
+                datatype = 'string'
+            elif isinstance(test_string, float):
                 datatype = 'string'
 
         return TYPE_MAP.get(datatype)(key, redis=redis)
