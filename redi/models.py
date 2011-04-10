@@ -33,7 +33,6 @@ class RedisKey(object):
             self.redis = config.redis
 
         self.redis = redis
-
         self.uuid = uuid.uuid4().hex
 
 
