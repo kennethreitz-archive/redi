@@ -2,6 +2,26 @@
 import copy
 import sys
 
+from . import config
+
+
+
+def compress_key(key):
+    """Compresses tupled key to string."""
+
+    if is_collection(key):
+        key = config.namespace_delimiter.join(key)
+
+    return key
+
+
+def expand_key(key):
+    """Expands stringed keys to tuples."""
+
+    if is_collection(key):
+        return key
+
+    return key.split(config.namespace_delimiter)
 
 
 
