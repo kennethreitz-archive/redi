@@ -8,38 +8,41 @@ import os
 
 
 import redi
-import redis
-
-DB = os.environ.get('REDI_TEST_DB_NUM', None)
-
-if DB is None:
-    raise Exception('hell no')
-
-redi.config.init(db=DB)
 
 
 
-class RediTestCase(unittest.TestCase):
-    """Redi test cases."""
+
+class RediTestSuite(unittest.TestCase):
+    """Redi test suite."""
 
     def setUp(self):
-        """Create simple data set with headers."""
 
-        self.redis = redis.Redis(db=DB)
+
+        redi.config.init(db=DB)
 
 
 
 
     def tearDown(self):
-        """Teardown."""
-        pass
-        self.redis.flushdb()
+
+        redi.db.flush()
+
+        assert len(redi.db.keys('*')) is 0
 
 
     def test_redi(self):
+
         a = redi.value('test')
         a.data = 'hi'
 
 
 if __name__ == '__main__':
+
+    DB = os.environ.get('REDI_TEST_DB_NUM', None)
+
+    if DB is None:
+        raise Exception('REDI_TEST_DB_NUM env must be set.')
+
+
+
     unittest.main()
