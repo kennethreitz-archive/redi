@@ -193,7 +193,7 @@ class RedisListString(RedisString, ListMixin):
     """Redis value of awesomeness."""
 
 
-    def __init__(self, key, redis=None):
+    def __init__(self, key, redis):
         super(RedisListString, self).__init__(key, redis=redis)
         self.key = key
 
@@ -231,7 +231,7 @@ class RedisDictString(RedisString, DictMixin):
     """Redis value of awesomeness."""
 
 
-    def __init__(self, key, redis=None):
+    def __init__(self, key, redis):
         super(RedisDictString, self).__init__(key, redis=redis)
         self.key = key
 
@@ -254,7 +254,7 @@ class RedisDictString(RedisString, DictMixin):
 class RedisList(RedisKey):
     """Redis list of awesomeness."""
 
-    def __init__(self, key, redis=None):
+    def __init__(self, key, redis):
         super(RedisList, self).__init__(key, redis=redis)
         self.key = key
 
