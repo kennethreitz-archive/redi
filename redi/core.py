@@ -11,21 +11,7 @@ Simple, eh?
 """
 
 
-
-from .utils import is_collection
-from . import config
-from . import models
-
-
-
-def _expand_key(key):
-    """Expands tupled keys."""
-
-    if is_collection(key):
-        key = config.namespace_delimiter.join(key)
-
-    return key
-
+from . import config, models, db, ext
 
 
 def value(key, redis=config.redis):
@@ -34,7 +20,7 @@ def value(key, redis=config.redis):
     """
 
 
-    return models.RedisValue(_expand_key(key), redis=config.redis)
+    return models.RedisValue(ext.expand_key(key), redis=config.redis)
 
 
 
