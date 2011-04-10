@@ -15,13 +15,15 @@ from . import config, models, db, ext, utils
 
 
 def key(key, redis=config.redis, default=None):
-    """Return Redi Dattype instance for given key.
+    """Return Redi Datatype instance for given key.
     Optional `redis` keyword argument sets Redis instance.
+    Optional `default` keyword sets default Redis datatype if no value
+    exists.
     """
 
     return ext.auto_type(
         utils.compress_key(key), redis=config.redis, default=default
-    )
+)
 
 
 def list_string(key, redis=config.redis):
