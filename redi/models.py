@@ -15,10 +15,7 @@ from operator import itemgetter
 from UserDict import DictMixin
 
 from . import config
-from .ext import expand_key
-from .utils import ListMixin, is_collection
-
-
+from .utils import ListMixin, is_collection, compress_key, expand_key
 
 from clint.textui import colored
 
@@ -115,7 +112,7 @@ class RedisKey(BaseRedis):
     def rename(self, new_name, safe=True):
         """Renames this key."""
 
-        new_name = expand_key(new_name)
+        new_name = compress_key(new_name)
 
         if safe:
             if self.redis.renamenx(self.key, new_name):
@@ -132,21 +129,23 @@ class RedisKey(BaseRedis):
     def children(self):
         """Lists all children of current key."""
 
-        keys = self.redis.keys('{0}*'.format(self.key))
+        namespace = expand_key(self.key) + ['*']
+
+        key = compress_key(namespace)
+        keys = self.redis.keys(key)
 
         for key in keys:
             yield key
 
 
 
-class RedisValue(RedisKey, ListMixin, DictMixin):
-    """Redis value of awesomeness."""
+class RedisString(RedisKey):
+    """Redis String interface."""
 
     def __init__(self, key, redis=None):
-        super(RedisValue, self).__init__(key, redis=redis)
+        super(RedisString, self).__init__(key, redis=redis)
 
         self.key = key
-
 
     def __repr__(self):
         return '<redis-value {0}>'.format(self.key)
@@ -166,13 +165,14 @@ class RedisValue(RedisKey, ListMixin, DictMixin):
 
     @property
     def data(self):
-        """Value from database."""
+        """Writes value to database."""
         v = self.redis.get(self.key)
         return self.to_python(v)
 
 
     @data.setter
     def data(self, value):
+        """Writes value to database."""
         self.save(value)
 
 
@@ -181,22 +181,44 @@ class RedisValue(RedisKey, ListMixin, DictMixin):
         return self.data.__class__
 
 
-    #### Explicit Magic Methods for various datatypes ####
+    def write(self):
+        return self.data.write()
+
 
     def __getitem__(self, item):
         return self.data.__getitem__(item)
 
-    def get(self, item):
-        return self.data.get(item)
 
     def __setitem__(self, k, v):
         return self.data.__setitem__(k, v)
 
-    def keys(self):
-        return self.data.keys()
 
-    def write(self):
-        return self.data.write()
+    def __delitem__(self, k):
+        return self.data.__delitem__(k)
+
+
+
+class RedisListString(RedisString, ListMixin):
+    """Redis value of awesomeness."""
+
+
+    def __init__(self, key, redis=None):
+        super(RedisListString, self).__init__(key, redis=redis)
+        self.key = key
+
+
+    def __repr__(self):
+        return '<redis-list-string {0}>'.format(self.key)
+
+
+    def __getitem__(self, item):
+        return self.data.__getitem__(item)
+
+    def __setitem__(self, k, v):
+        return self.data.__setitem__(k, v)
+
+    def __delitem__(self, k):
+        return self.data.__delitem__(k)
 
     def _get_element(self, i):
         return self.data._get_element(i)
@@ -212,6 +234,27 @@ class RedisValue(RedisKey, ListMixin, DictMixin):
 
     def _constructor(self, iter):
         return self.data._constructor(iter)
+
+
+class RedisDictString(RedisString, DictMixin):
+    """Redis value of awesomeness."""
+
+
+    def __init__(self, key, redis=None):
+        super(RedisDictString, self).__init__(key, redis=redis)
+        self.key = key
+
+
+    def __repr__(self):
+        return '<redis-dict-string {0}>'.format(self.key)
+
+
+    def get(self, item):
+        return self.data.get(item)
+
+
+    def keys(self):
+        return self.data.keys()
 
 
 
@@ -472,14 +515,12 @@ class SubDict(DictMixin):
         self.data[k] = v
         self.write()
 
+    def __delitem__(self, k):
+        del self.data[k]
+        self.write()
 
     def __repr__(self):
         return repr(self.data)
 
     def keys(self):
         return self.data.keys()
-
-
-
-
-
