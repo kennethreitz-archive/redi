@@ -8,27 +8,37 @@ import os
 
 
 import redi
+import redis
 
 DB = os.environ.get('REDI_TEST_DB_NUM', None)
-redi.init(db=DB)
+
+if DB is None:
+    raise Exception('hell no')
+
+redi.config.init(db=DB)
 
 
 
-class TablibTestCase(unittest.TestCase):
-    """Tablib test cases."""
+class RediTestCase(unittest.TestCase):
+    """Redi test cases."""
 
     def setUp(self):
         """Create simple data set with headers."""
 
-        pass
+        self.redis = redis.Redis(db=DB)
+
+
 
 
     def tearDown(self):
         """Teardown."""
         pass
+        self.redis.flushdb()
 
 
-
+    def test_redi(self):
+        a = redi.value('test')
+        a.data = 'hi'
 
 
 if __name__ == '__main__':
