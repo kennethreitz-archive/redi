@@ -9,14 +9,16 @@ This module contains most of the functionality of redi.
 
 """
 
-from random import random
+import uuid
 
-
+from operator import itemgetter
 from UserDict import DictMixin
 
 from . import config
 from .ext import expand_key
 from .utils import ListMixin, is_collection
+
+
 
 from clint.textui import colored
 
@@ -34,6 +36,8 @@ class BaseRedis(object):
             self.redis = config.redis
 
         self.redis = redis
+
+        self.uuid = uuid.uuid4().hex
 
 
     @staticmethod
@@ -163,13 +167,7 @@ class RedisValue(RedisKey, ListMixin, DictMixin):
     @property
     def data(self):
         v = self.redis.get(self.key)
-        v = self.to_python(v)
-
-        for attr in self._DICT_ATTRS:
-            # getattr(self, attr) = None
-            pass
-
-        return v
+        return self.to_python(v)
 
 
     @data.setter
@@ -398,6 +396,9 @@ class RedisList(RedisKey):
                     if s in item:
                         yield self.to_python(item)
 
+    def sorted_by(self, key, reverse=False ):
+
+        return sorted(self, key=itemgetter(key), reverse=reverse)
 
 
 class SubList(ListMixin):
