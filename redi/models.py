@@ -72,13 +72,27 @@ class RedisKey(object):
     def children(self):
         """Lists all children of current key."""
 
-        namespace = expand_key(self.key) + ['*']
+        namespace = compress_key(expand_key(self.key) + ['*'])
 
-        key = compress_key(namespace)
-        keys = self.redis.keys(key)
+        return self.redis.keys(namespace)
 
-        for key in keys:
-            yield key
+
+    @property
+    def siblings(self):
+        """Lists all siblings of current key."""
+
+        namespace = compress_key(expand_key(self.key)[:-1]+ ['*'])
+
+        keys = self.redis.keys(namespace)
+
+        # clean up results
+        keys.remove(self.key)
+
+        for key in self.children:
+            keys.remove(key)
+
+
+        return keys
 
 
     @staticmethod
@@ -227,6 +241,7 @@ class RedisListString(RedisString, ListMixin):
         return self.data._constructor(iter)
 
 
+
 class RedisDictString(RedisString, DictMixin):
     """Redis value of awesomeness."""
 
@@ -246,8 +261,6 @@ class RedisDictString(RedisString, DictMixin):
 
     def keys(self):
         return self.data.keys()
-
-
 
 
 
