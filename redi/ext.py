@@ -22,6 +22,7 @@ TYPE_MAP = {
     'list-string': models.RedisListString,
     'stringlist': models.RedisListString,
     'string-list': models.RedisListString,
+
     'dictstring': models.RedisDictString,
     'dict-string': models.RedisDictString,
     'stringdict': models.RedisDictString,
@@ -43,6 +44,16 @@ def auto_type(key, redis=None, default=None):
     if redis.exists(key):
 
         datatype = redis.type(key)
+
+        if datatype == 'string':
+            test_string = models.RedisString(key).data
+
+            if isinstance(test_string, dict):
+                datatype = 'dict-string'
+            elif isinstance(test_string, list):
+                datatype = 'list-string'
+            elif isinstance(test_string, str):
+                datatype = 'string'
 
         return TYPE_MAP.get(datatype)(key, redis=redis)
 
