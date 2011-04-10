@@ -28,7 +28,7 @@ class RediTestSuite(unittest.TestCase):
 
     def test_value_as_dict(self):
 
-        a = redi.value('test')
+        a = redi.dict_string('test')
         self.assertEqual(a.type, type(None))
 
         a.data = {}
@@ -36,7 +36,13 @@ class RediTestSuite(unittest.TestCase):
 
         a['face'] = 'book'
 
+        self.assertEqual(a['face'], 'book')
+        self.assertEqual(a.get('face'), 'book')
+        self.assertEqual(a.data['face'], 'book')
+        self.assertEqual(a.data.get('face'), 'book')
 
+        del a['face']
+        self.assertEqual(a['face'], None)
 
         a.delete()
         self.assertEqual(a.data, None)
@@ -44,17 +50,17 @@ class RediTestSuite(unittest.TestCase):
 
     def test_value_as_list(self):
 
-        a = redi.value('test')
+        a = redi.list_string('test')
 
 
     def test_key_rename_unsafe(self):
 
-        a = redi.value('rename_me')
+        a = redi.string('rename_me')
         a.data = 'i am going to be renamed'
         success = a.rename('renamed', safe=False)
 
-        b = redi.value('renamed')
-        c = redi.value('rename_me')
+        b = redi.string('renamed')
+        c = redi.string('rename_me')
 
         self.assertTrue(success)
         self.assertEqual(a.data, b.data)
@@ -67,13 +73,13 @@ class RediTestSuite(unittest.TestCase):
 
     def test_key_rename_unsafe_overwrite(self):
 
-        a = redi.value('rename_me')
+        a = redi.string('rename_me')
         a.data = 'i am going to be renamed'
 
         orig_value = a.data
         orig_key = a.key
 
-        b = redi.value('exists')
+        b = redi.string('exists')
         b.data = 'yes i do'
 
         success = a.rename('exists', safe=False)
@@ -88,7 +94,7 @@ class RediTestSuite(unittest.TestCase):
 
     def test_key_rename_safe(self):
 
-        a = redi.value('rename_me')
+        a = redi.string('rename_me')
         a.data = 'i am going to be renamed'
 
         orig_value = a.data
@@ -105,13 +111,13 @@ class RediTestSuite(unittest.TestCase):
 
     def test_key_rename_safe_overwrite(self):
 
-        a = redi.value('rename_me')
+        a = redi.string('rename_me')
         a.data = 'i am going to be renamed'
 
         orig_value = a.data
         orig_key = a.key
 
-        b = redi.value('exists')
+        b = redi.string('exists')
         b.data = 'yes i do'
 
         success = a.rename('exists', safe=True)
