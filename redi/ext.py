@@ -15,10 +15,21 @@ from .utils import is_collection, compress_key
 
 
 TYPE_MAP = {
-    'value': models.RedisListString,
-    'string': models.RedisListString,
+    'string': models.RedisString,
+    'value': models.RedisString,
+
+    'liststring': models.RedisListString,
+    'list-string': models.RedisListString,
+    'stringlist': models.RedisListString,
+    'string-list': models.RedisListString,
+    'dictstring': models.RedisDictString,
+    'dict-string': models.RedisDictString,
+    'stringdict': models.RedisDictString,
+    'string-dict': models.RedisDictString,
+
     'list': models.RedisList
 }
+
 
 
 def auto_type(key, redis=None, default=None):
