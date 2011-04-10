@@ -27,7 +27,7 @@ Usage
 - **Resis Value as a List** ::
 
 
-    d = redi.value('haystack:metalist')
+    d = redi.list_string('haystack:metalist')
 
     d.append(dict(blah='blah'))
     d.append([1,2,3,4])
@@ -37,7 +37,7 @@ Usage
 
 - **Resis Value as a Dict** ::
 
-    d = redi.value('haystack:metadict')
+    d = redi.dict_string('haystack:metadict')
 
     d.data = {}
 
