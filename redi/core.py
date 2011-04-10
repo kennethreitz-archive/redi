@@ -29,7 +29,6 @@ def list_string(key, redis=config.redis):
     Optional `redis` keyword argument sets Redis instance.
     """
 
-
     return models.RedisListString(utils.compress_key(key), redis=config.redis)
 
 
@@ -37,7 +36,6 @@ def dict_string(key, redis=config.redis):
     """Return RedisValue instance for given key.
     Optional `redis` keyword argument sets Redis instance.
     """
-
 
     return models.RedisDictString(utils.compress_key(key), redis=config.redis)
 
