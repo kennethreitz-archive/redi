@@ -36,8 +36,6 @@ class RediTestSuite(unittest.TestCase):
 
         a['face'] = 'book'
 
-        print a._raw
-
 
 
         a.delete()
