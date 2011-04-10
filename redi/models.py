@@ -13,10 +13,9 @@ This module contains most of the functionality of redi.
 
 from UserDict import DictMixin
 
-from .utils import ListMixin, is_collection
-
 from . import config
 from .ext import expand_key
+from .utils import ListMixin, is_collection
 
 from clint.textui import colored
 
@@ -174,7 +173,6 @@ class RedisValue(RedisKey):
     def type(self):
         v = self.redis.get(self.key)
         return type(self.value)
-
 
 
 
