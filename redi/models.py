@@ -16,6 +16,7 @@ from UserDict import DictMixin
 from .utils import ListMixin, is_collection
 
 from . import config
+from .ext import expand_key
 
 from clint.textui import colored
 
@@ -29,13 +30,10 @@ class BaseRedis(object):
     def __init__(self, redis=None):
         super(BaseRedis, self).__init__()
 
+        if redis is None:
+            self.redis = config.redis
 
-        # if redis is None:
-        #     self.redis = config.redis
-        # else:
         self.redis = redis
-
-        print colored.red(self.redis.db)
 
 
     @staticmethod
@@ -105,7 +103,27 @@ class RedisKey(BaseRedis):
 
     def expire(self, s):
         """Expires this key from Redis in given seconds."""
+        # TODO: Accept datetime for expire_at
+
         return self.redis.expire(self.key, s)
+
+
+    def rename(self, new_name, safe=True):
+        """Renames this key."""
+
+        new_name = expand_key(new_name)
+
+        if safe:
+            if self.redis.renamenx(self.key, new_name):
+                self.key = new_name
+                return True
+            return False
+        else:
+            self.redis.rename(self.key, new_name)
+            self.key = new_name
+            return True
+
+
 
     @property
     def children(self):
