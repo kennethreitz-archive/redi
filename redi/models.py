@@ -166,6 +166,7 @@ class RedisValue(RedisKey, ListMixin, DictMixin):
 
     @property
     def data(self):
+        """Value from database."""
         v = self.redis.get(self.key)
         return self.to_python(v)
 
