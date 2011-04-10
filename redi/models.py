@@ -124,7 +124,6 @@ class RedisKey(BaseRedis):
             return True
 
 
-
     @property
     def children(self):
         """Lists all children of current key."""
