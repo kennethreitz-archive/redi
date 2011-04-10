@@ -46,7 +46,7 @@ def auto_type(key, redis=None, default=None):
         datatype = redis.type(key)
 
         if datatype == 'string':
-            test_string = models.RedisString(key).data
+            test_string = models.RedisString(key, redis=redis).data
 
             if isinstance(test_string, dict):
                 datatype = 'dict-string'
