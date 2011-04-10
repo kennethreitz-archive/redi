@@ -36,6 +36,83 @@ class RediTestSuite(unittest.TestCase):
         a.data = 'hi'
 
 
+    def test_key_rename_unsafe(self):
+
+        a = redi.value('rename_me')
+        a.data = 'i am going to be renamed'
+        success = a.rename('renamed', safe=False)
+
+        b = redi.value('renamed')
+        c = redi.value('rename_me')
+
+        self.assertTrue(success)
+        self.assertEqual(a.data, b.data)
+        self.assertEqual(c.data, None)
+
+        a.delete()
+        b.delete()
+        c.delete()
+
+
+    def test_key_rename_unsafe_overwrite(self):
+
+        a = redi.value('rename_me')
+        a.data = 'i am going to be renamed'
+
+        orig_value = a.data
+        orig_key = a.key
+
+        b = redi.value('exists')
+        b.data = 'yes i do'
+
+        success = a.rename('exists', safe=False)
+
+        self.assertTrue(success)
+        self.assertEqual(orig_value, a.data)
+        self.assertNotEqual(a.key, orig_key)
+
+        a.delete()
+        b.delete()
+
+
+    def test_key_rename_safe(self):
+
+        a = redi.value('rename_me')
+        a.data = 'i am going to be renamed'
+
+        orig_value = a.data
+        orig_key = a.key
+
+        success = a.rename('exists', safe=True)
+
+        self.assertTrue(success)
+        self.assertEqual(orig_value, a.data)
+        self.assertNotEqual(a.key, orig_key)
+
+        a.delete()
+
+
+    def test_key_rename_safe_overwrite(self):
+
+        a = redi.value('rename_me')
+        a.data = 'i am going to be renamed'
+
+        orig_value = a.data
+        orig_key = a.key
+
+        b = redi.value('exists')
+        b.data = 'yes i do'
+
+        success = a.rename('exists', safe=True)
+
+        self.assertFalse(success)
+        self.assertEqual(orig_value, a.data)
+        self.assertEqual(a.key, orig_key)
+
+        a.delete()
+        b.delete()
+
+
 if __name__ == '__main__':
 
     DB = os.environ.get('REDI_TEST_DB_NUM', None)
