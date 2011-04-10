@@ -17,6 +17,8 @@ from .utils import ListMixin, is_collection
 
 from . import config
 
+from clint.textui import colored
+
 
 
 class BaseRedis(object):
@@ -24,9 +26,16 @@ class BaseRedis(object):
     datatype mapping."""
 
 
-    def __init__(self, redis=config.redis):
+    def __init__(self, redis=None):
         super(BaseRedis, self).__init__()
+
+
+        # if redis is None:
+        #     self.redis = config.redis
+        # else:
         self.redis = redis
+
+        print colored.red(self.redis.db)
 
 
     @staticmethod
@@ -79,8 +88,9 @@ class BaseRedis(object):
 class RedisKey(BaseRedis):
     """Contains methods that can be applied to any Redis key."""
 
-    def __init__(self, key, r=config.redis):
-        super(RedisKey, self).__init__(redis=r)
+    def __init__(self, key, redis=None):
+        super(RedisKey, self).__init__(redis=redis)
+
         self.key = key
 
 
@@ -97,14 +107,24 @@ class RedisKey(BaseRedis):
         """Expires this key from Redis in given seconds."""
         return self.redis.expire(self.key, s)
 
+    @property
+    def children(self):
+        """Lists all children of current key."""
+
+        keys = self.redis.keys('{0}*'.format(self.key))
+
+        for key in keys:
+            yield key
+
 
 
 class RedisValue(RedisKey):
     """Redis value of awesomeness."""
 
 
-    def __init__(self, key, r=config.redis):
-        super(RedisValue, self).__init__(key, r=r)
+    def __init__(self, key, redis=None):
+        super(RedisValue, self).__init__(key, redis=redis)
+
         self.key = key
 
 
@@ -144,9 +164,12 @@ class RedisValue(RedisKey):
 class RedisList(RedisKey):
     """Redis list of awesomeness."""
 
-    def __init__(self, key, r=config.redis):
-        super(RedisList, self).__init__(key, r=r)
+    def __init__(self, key, redis=None):
+        super(RedisList, self).__init__(key, redis=redis)
+        # print r.db
+        # print self.redis
         self.key = key
+
 
 
     def __repr__(self):

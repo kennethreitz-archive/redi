@@ -11,10 +11,10 @@ Simple, eh?
 """
 
 
-from . import config
-from .config import init
-from .models import *
+
 from .utils import is_collection
+from . import config
+from . import models
 
 
 
@@ -30,16 +30,17 @@ def _expand_key(key):
 
 def value(key, redis=config.redis):
     """Return RedisValue instance for given key.
-    Optional `r` keyword argument sets Redis instance.
+    Optional `redis` keyword argument sets Redis instance.
     """
 
-    return RedisValue(_expand_key(key), r=redis)
+
+    return models.RedisValue(_expand_key(key), redis=config.redis)
 
 
 
 def list(key, redis=config.redis):
     """Return RedisList instance for given key.
-    Optional `r` keyword argument sets Redis instance.
+    Optional `redis` keyword argument sets Redis instance.
     """
 
-    return RedisList(_expand_key(key), r=redis)
+    return models.RedisList(_expand_key(key), redis=config.redis)

@@ -9,7 +9,7 @@ This module contains the redi configuration.
 """
 
 
-from redis import Redis
+from redis import Redis as RedisClient
 
 import jsonpickle
 
@@ -26,7 +26,11 @@ def init(host='localhost', port=6379, db=0):
     """Configures module-level redis instance."""
 
     global redis
-    redis = Redis(host=host, port=port, db=db)
+    redis = RedisClient(host=host, port=port, db=db)
 
 
 init()
+
+
+def test():
+    print redis.db
