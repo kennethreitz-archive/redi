@@ -29,4 +29,12 @@ def list(key, redis=config.redis):
     Optional `redis` keyword argument sets Redis instance.
     """
 
-    return models.RedisList(_expand_key(key), redis=config.redis)
+    return models.RedisList(ext.expand_key(key), redis=config.redis)
+
+
+def key(key, redis=config.redis):
+    """Return Redi Dattype instance for given key.
+    Optional `redis` keyword argument sets Redis instance.
+    """
+
+    return ext.auto_type(key, redis=config.redis)
