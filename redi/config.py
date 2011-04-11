@@ -22,15 +22,15 @@ block_timeout = 10
 
 
 
-def init(host='localhost', port=6379, db=0):
+def init(host='localhost', port=6379, db=0, password=None, r=None):
     """Configures module-level redis instance."""
 
     global redis
-    redis = RedisClient(host=host, port=port, db=db)
+
+    if r is not None:
+        redis = r
+    else:
+        redis = RedisClient(host=host, port=port, db=db, password=password)
 
 
 init()
-
-
-def test():
-    print redis.db
