@@ -12,6 +12,9 @@ Simple, eh?
 
 from . import config, models, db, ext, utils
 
+# REDI.S!
+s = ext.Objectify(rootkeys=ext.root_keys(), redis=config.redis)
+
 
 def key(key, redis=config.redis, default=None):
     """Return Redi Datatype instance for given key.
@@ -22,7 +25,7 @@ def key(key, redis=config.redis, default=None):
 
     return models.auto_type(
         utils.compress_key(key), redis=config.redis, default=default
-)
+    )
 
 
 def list_string(key, redis=config.redis):
@@ -55,6 +58,3 @@ def list(key, redis=config.redis):
     """
 
     return models.RedisList(utils.compress_key(key), redis=config.redis)
-
-# REDI.S!
-s = ext.Objectify(rootkeys=ext.root_keys(), redis=config.redis)
