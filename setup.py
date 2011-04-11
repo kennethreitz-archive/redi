@@ -19,7 +19,7 @@ required = ['redis']
 
 setup(
     name='redi',
-    version='0.0.5',
+    version='0.0.6',
     description='Python middle layer for interacting with Redis data easily.',
     long_description=open('README.rst').read(),
     author='Kenneth Reitz',
