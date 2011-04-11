@@ -20,12 +20,6 @@ from .utils import ListMixin, is_collection, compress_key, expand_key
 
 
 
-
-
-
-
-
-
 class RedisKey(object):
     """Contains methods that can be applied to any Redis key."""
 
@@ -72,11 +66,12 @@ class RedisKey(object):
                 pass
 
             if self._o:
-                if key in self.children:
+                # if key in self.children:
+                if True:
 
                     key = compress_key(expand_key(self.key) + [key])
 
-                    return auto_type(key, redis=self.redis, o=True)
+                    return auto_type(key, redis=self.redis, default='key', o=True)
 
         return object.__getattribute__(self, key)
 
@@ -619,6 +614,8 @@ def auto_type(key, redis=None, default=None, o=True):
 TYPE_MAP = {
     'string': RedisString,
     'value': RedisString,
+
+    'key': RedisKey,
 
     'liststring': RedisListString,
     'list-string': RedisListString,
