@@ -45,9 +45,14 @@ class RedisKey(object):
     def __repr__(self):
         return '<redis-key {0}>'.format(self.key)
 
-    @property
-    def _(self):
-        return 'hi'
+    def _(self, key, default='string'):
+
+        d = getattr(self, key, None)
+
+        if d is None:
+            key = compress_key(expand_key(self.key) + [key])
+            return auto_type(key, redis=self.redis, default=default, o=True)
+
 
     def delete(self):
         """Removes this key from Redis."""
@@ -92,12 +97,15 @@ class RedisKey(object):
     def children(self):
         """Lists all children of current key."""
 
-        namespace = compress_key(expand_key(self.key) + ['*'])
+        current_key = expand_key(self.key)
+
+        namespace = compress_key(current_key + ['*'])
 
         keys = []
 
         for key in self.redis.keys(namespace):
-            keys.append(expand_key(key)[-1])
+            _key = expand_key(key)[len(current_key):]
+            keys.append(compress_key(_key))
 
         return keys
 
