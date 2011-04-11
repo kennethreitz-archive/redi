@@ -13,7 +13,7 @@ Simple, eh?
 from . import config, models, db, ext, utils
 
 # REDI.S!
-s = ext.Objectify(rootkeys=ext.root_keys(), redis=config.redis)
+s = ext.TheSInRedis(redis=config.redis)
 
 
 def key(key, redis=config.redis, default=None):
