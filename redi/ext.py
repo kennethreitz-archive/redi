@@ -14,22 +14,6 @@ from . import models
 from .utils import is_collection, compress_key, expand_key
 
 
-TYPE_MAP = {
-    'string': models.RedisString,
-    'value': models.RedisString,
-
-    'liststring': models.RedisListString,
-    'list-string': models.RedisListString,
-    'stringlist': models.RedisListString,
-    'string-list': models.RedisListString,
-
-    'dictstring': models.RedisDictString,
-    'dict-string': models.RedisDictString,
-    'stringdict': models.RedisDictString,
-    'string-dict': models.RedisDictString,
-
-    'list': models.RedisList
-}
 
 
 
