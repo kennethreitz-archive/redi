@@ -39,16 +39,11 @@ class RedisKey(object):
     def __repr__(self):
         return '<redis-key {0}>'.format(self.key)
 
+
     def _(self, key, default='string'):
 
-        d = getattr(self, key, None)
-
-        if d is None:
-            key = compress_key(expand_key(self.key) + [key])
-            return auto_type(key, redis=self.redis, default=default, o=True)
-
-        else:
-            return d
+        key = compress_key(expand_key(self.key) + [key])
+        return auto_type(key, redis=self.redis, default=default, o=True)
 
 
     def delete(self):

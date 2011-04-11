@@ -14,6 +14,7 @@ from . import config, models, db, ext, utils
 
 # REDI.S!
 s = ext.TheSInRedis(redis=config.redis)
+s = models.RedisKey('', redis=config.redis, o=True)
 
 
 def key(key, redis=config.redis, default=None):
