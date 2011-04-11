@@ -53,14 +53,24 @@ class RedisKey(object):
             key = compress_key(expand_key(self.key) + [key])
             return auto_type(key, redis=self.redis, default=default, o=True)
 
+        else:
+            return d
+
 
     def delete(self):
         """Removes this key from Redis."""
         return self.redis.delete(self.key)
 
+
     def __getattribute__(self, key):
 
-        if key not in ('_o', 'children', 'key', 'redis'):
+        if key not in ('_o', 'children', 'key', 'data', 'redis'):
+
+            try:
+                return object.__getattribute__(self, key)
+            except AttributeError:
+                pass
+
             if self._o:
                 if key in self.children:
 
