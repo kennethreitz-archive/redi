@@ -11,7 +11,7 @@ This module contains the redi configuration.
 
 from redis import Redis as RedisClient
 
-import jsonpickle
+from .packages import jsonpickle
 
 
 encoder =  jsonpickle.encode
