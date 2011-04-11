@@ -42,7 +42,11 @@ class RedisKey(object):
 
     def _(self, key, default='string'):
 
-        key = compress_key(expand_key(self.key) + [key])
+        if len(self.key):
+            key = compress_key(expand_key(self.key) + [key])
+        else:
+            key = [key]
+
         return auto_type(key, redis=self.redis, default=default, o=True)
 
 
@@ -64,7 +68,10 @@ class RedisKey(object):
                 # if key in self.children:
                 if True:
 
-                    key = compress_key(expand_key(self.key) + [key])
+                    if len(self.key):
+                        key = compress_key(expand_key(self.key) + [key])
+                    else:
+                        key = [key]
 
                     return auto_type(key, redis=self.redis, default='key', o=True)
 
