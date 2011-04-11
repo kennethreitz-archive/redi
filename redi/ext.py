@@ -21,25 +21,26 @@ def root_keys(redis=config.redis):
 
     keys = []
 
-
     for key in map(expand_key, redis.keys('*')):
-        if len(key) < 2:
-            keys.append(key)
+        keys.append(key[0])
 
     return keys
 
 
-class Objectify(object):
+class TheSInRedis(object):
     """Objects out of NOTHING!"""
 
-    def __init__(self, rootkeys, redis=config.redis):
-        super(Objectify, self).__init__()
+    def __init__(self, redis=config.redis):
+        super(TheSInRedis, self).__init__()
 
         self.redis = redis
-        self.rootkeys = rootkeys
-
         self.update()
 
+    def __getattribute__(self, key):
+        if not key in ('redis', 'rootkeys', 'update', '__dict__'):
+            self.update()
+
+        return object.__getattribute__(self, key)
 
     def __repr__(self):
         return repr(self.dict)
@@ -52,6 +53,7 @@ class Objectify(object):
     def dict(self):
         d = self.__dict__
         del d['redis']
+        del d['rootkeys']
 
         return d
 
@@ -66,16 +68,10 @@ class Objectify(object):
 
 
     def update(self):
-        for key in self.rootkeys:
-            self.__dict__[key[-1]] = (
-                models.auto_type(key[-1], redis=self.redis, o=True)
+        for key in root_keys():
+            self.__dict__[key] = (
+                models.auto_type(key, redis=self.redis, default='key', o=True)
             )
-
-        # keys = []
-
-        # for key in self.redis.keys('*'):
-        #     keys.append(key)
-        # print keys
 
 
 
