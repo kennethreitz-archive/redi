@@ -11,7 +11,7 @@ This module contains extra stuff.
 
 from . import config
 from . import models
-from .utils import is_collection, compress_key
+from .utils import is_collection, compress_key, expand_key
 
 
 TYPE_MAP = {
@@ -33,40 +33,66 @@ TYPE_MAP = {
 
 
 
-def auto_type(key, redis=None, default=None):
-    """Returns datatype instance"""
+def root_keys(redis=config.redis):
 
-    if redis is None:
-        redis = config.redis
+    keys = []
 
-    key = compress_key(key)
 
-    if redis.exists(key):
+    for key in map(expand_key, redis.keys('*')):
+        if len(key) < 2:
+            keys.append(key)
 
-        datatype = redis.type(key)
+    return keys
 
-        if datatype == 'string':
-            test_string = models.RedisString(key, redis=redis).data
 
-            if isinstance(test_string, dict):
-                datatype = 'dict-string'
-            elif isinstance(test_string, list):
-                datatype = 'list-string'
-            elif isinstance(test_string, basestring):
-                datatype = 'string'
-            elif isinstance(test_string, int):
-                datatype = 'string'
-            elif isinstance(test_string, float):
-                datatype = 'string'
+class Objectify(object):
+    """Objects out of NOTHING!"""
 
-        return TYPE_MAP.get(datatype)(key, redis=redis)
+    def __init__(self, rootkeys, redis=config.redis):
+        super(Objectify, self).__init__()
 
-    else:
-        if default:
-            try:
-                return TYPE_MAP.get(default)(key, redis=redis)
-            except KeyError:
-                raise ValueError('Provide a valid default redis type.')
+        self.redis = redis
+        self.rootkeys = rootkeys
 
-        return None
+        self.update()
+
+
+    def __repr__(self):
+        return repr(self.dict)
+
+
+    def __getitem__(self, key):
+        return getattr(self, key, None)
+
+    @property
+    def dict(self):
+        d = self.__dict__
+        del d['redis']
+
+        return d
+
+    def items(self):
+        """Returns items within object."""
+        return self.dict.items()
+
+
+    def keys(self):
+        """Returns keys within object."""
+        return self.dict.keys()
+
+
+    def update(self):
+        for key in self.rootkeys:
+            self.__dict__[key[-1]] = (
+                models.auto_type(key[-1], redis=self.redis, o=True)
+            )
+
+        # keys = []
+
+        # for key in self.redis.keys('*'):
+        #     keys.append(key)
+        # print keys
+
+
+
 

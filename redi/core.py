@@ -7,7 +7,6 @@ redi.core
 This module contains the primary interface for redi.
 
 Simple, eh?
-
 """
 
 
@@ -21,7 +20,7 @@ def key(key, redis=config.redis, default=None):
     exists.
     """
 
-    return ext.auto_type(
+    return models.auto_type(
         utils.compress_key(key), redis=config.redis, default=default
 )
 
@@ -57,4 +56,5 @@ def list(key, redis=config.redis):
 
     return models.RedisList(utils.compress_key(key), redis=config.redis)
 
-
+# REDI.S!
+s = ext.Objectify(rootkeys=ext.root_keys(), redis=config.redis)

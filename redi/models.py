@@ -13,11 +13,15 @@ import uuid
 
 from operator import itemgetter
 from UserDict import DictMixin
-
 from . import config
+
 from .utils import ListMixin, is_collection, compress_key, expand_key
 
-from clint.textui import colored
+
+
+
+
+
 
 
 
@@ -25,9 +29,11 @@ from clint.textui import colored
 class RedisKey(object):
     """Contains methods that can be applied to any Redis key."""
 
-    def __init__(self, key, redis=None):
+    def __init__(self, key, redis=None, o=False):
+        super(RedisKey, self).__init__()
 
         self.key = key
+        self._o = o
 
         if redis is None:
             self.redis = config.redis
@@ -39,11 +45,25 @@ class RedisKey(object):
     def __repr__(self):
         return '<redis-key {0}>'.format(self.key)
 
+    @property
+    def _(self):
+        return 'hi'
 
     def delete(self):
         """Removes this key from Redis."""
         return self.redis.delete(self.key)
 
+    def __getattribute__(self, key):
+
+        if key not in ('_o', 'children', 'key', 'redis'):
+            if self._o:
+                if key in self.children:
+
+                    key = compress_key(expand_key(self.key) + [key])
+
+                    return auto_type(key, redis=self.redis, o=True)
+
+        return object.__getattribute__(self, key)
 
     def expire(self, s):
         """Expires this key from Redis in given seconds."""
@@ -74,7 +94,12 @@ class RedisKey(object):
 
         namespace = compress_key(expand_key(self.key) + ['*'])
 
-        return self.redis.keys(namespace)
+        keys = []
+
+        for key in self.redis.keys(namespace):
+            keys.append(expand_key(key)[-1])
+
+        return keys
 
 
     @property
@@ -89,7 +114,10 @@ class RedisKey(object):
         keys.remove(self.key)
 
         for key in self.children:
-            keys.remove(key)
+            try:
+                keys.remove(key)
+            except ValueError:
+                pass
 
 
         return keys
@@ -146,8 +174,8 @@ class RedisKey(object):
 class RedisString(RedisKey):
     """Redis String interface."""
 
-    def __init__(self, key, redis=None):
-        super(RedisString, self).__init__(key, redis=redis)
+    def __init__(self, key, redis=None, o=False):
+        super(RedisString, self).__init__(key, redis=redis, o=o)
 
         self.key = key
 
@@ -207,8 +235,8 @@ class RedisListString(RedisString, ListMixin):
     """Redis value of awesomeness."""
 
 
-    def __init__(self, key, redis):
-        super(RedisListString, self).__init__(key, redis=redis)
+    def __init__(self, key, redis, o=False):
+        super(RedisListString, self).__init__(key, redis=redis, o=o)
         self.key = key
 
 
@@ -246,8 +274,8 @@ class RedisDictString(RedisString, DictMixin):
     """Redis value of awesomeness."""
 
 
-    def __init__(self, key, redis):
-        super(RedisDictString, self).__init__(key, redis=redis)
+    def __init__(self, key, redis, o=False):
+        super(RedisDictString, self).__init__(key, redis=redis, o=o)
         self.key = key
 
 
@@ -267,8 +295,8 @@ class RedisDictString(RedisString, DictMixin):
 class RedisList(RedisKey):
     """Redis list of awesomeness."""
 
-    def __init__(self, key, redis):
-        super(RedisList, self).__init__(key, redis=redis)
+    def __init__(self, key, redis, o=False):
+        super(RedisList, self).__init__(key, redis=redis, o=o)
         self.key = key
 
 
@@ -528,3 +556,62 @@ class SubDict(DictMixin):
 
     def keys(self):
         return self.data.keys()
+
+
+
+def auto_type(key, redis=None, default=None, o=True):
+    """Returns datatype instance"""
+
+    if redis is None:
+        redis = config.redis
+
+    key = compress_key(key)
+
+    if redis.exists(key):
+
+        datatype = redis.type(key)
+
+        if datatype == 'string':
+            test_string = RedisString(key, redis=redis).data
+
+            if isinstance(test_string, dict):
+                datatype = 'dict-string'
+            elif isinstance(test_string, list):
+                datatype = 'list-string'
+            elif isinstance(test_string, basestring):
+                datatype = 'string'
+            elif isinstance(test_string, int):
+                datatype = 'string'
+            elif isinstance(test_string, float):
+                datatype = 'string'
+
+        return TYPE_MAP.get(datatype)(key, redis=redis, o=o)
+
+    else:
+        if default:
+            try:
+                return TYPE_MAP.get(default)(key, redis=redis, o=o)
+            except KeyError:
+                raise ValueError('Provide a valid default redis type.')
+
+        return None
+
+
+
+TYPE_MAP = {
+    'string': RedisString,
+    'value': RedisString,
+
+    'liststring': RedisListString,
+    'list-string': RedisListString,
+    'stringlist': RedisListString,
+    'string-list': RedisListString,
+
+    'dictstring': RedisDictString,
+    'dict-string': RedisDictString,
+    'stringdict': RedisDictString,
+    'string-dict': RedisDictString,
+
+    'list': RedisList
+}
+

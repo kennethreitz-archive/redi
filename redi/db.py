@@ -12,14 +12,15 @@ from . import config
 
 
 def flush(redis=None):
-    """Flushes Redis database."""
+    """Flushes active Redis database."""
 
     if redis is None:
         redis = config.redis
 
     return redis.flushdb()
 
-def keys(search, redis=None):
+
+def keys(search='*', redis=None):
     """Flushes Redis database."""
 
     if redis is None:
