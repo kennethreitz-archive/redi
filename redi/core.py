@@ -13,7 +13,6 @@ Simple, eh?
 from . import config, models, db, ext, utils
 
 # REDI.S!
-s = ext.TheSInRedis(redis=config.redis)
 s = models.RedisKey('', redis=config.redis, o=True)
 
 
