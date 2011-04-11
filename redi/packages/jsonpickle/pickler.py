@@ -6,9 +6,9 @@
 # This software is licensed as described in the file COPYING, which
 # you should have received as part of this distribution.
 import types
-import jsonpickle.util as util
-import jsonpickle.tags as tags
-import jsonpickle.handlers as handlers
+from . import util as util
+from . import tags as tags
+from . import handlers as handlers
 
 
 class Pickler(object):

@@ -7,10 +7,10 @@
 # you should have received as part of this distribution.
 
 import sys
-import jsonpickle.util as util
-import jsonpickle.tags as tags
-import jsonpickle.handlers as handlers
-from jsonpickle.compat import set
+from . import util as util
+from . import tags as tags
+from . import handlers as handlers
+from .compat import set
 
 
 class Unpickler(object):
