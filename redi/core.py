@@ -10,7 +10,7 @@ Simple, eh?
 """
 
 
-from . import config, models, db, ext, utils
+from . import config, models, db, utils
 
 # REDI.S!
 s = models.RedisKey('', redis=config.redis, o=True)
