@@ -13,7 +13,7 @@ Simple, eh?
 from . import config, models, db, utils
 
 # REDI.S!
-s = models.RedisKey('', redis=config.redis, o=True)
+s = models.RedisKey('', redis=None, o=True)
 
 
 def key(key, redis=config.redis, default=None):
